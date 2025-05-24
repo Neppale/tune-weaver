@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { SpotifyTrack } from 'src/interfaces/spotify/track.interface';
 import { PlaylistOrganization } from 'src/interfaces/spotify/playlist-organization.interface';
+import { GetTracksBySpotifyPlaylistId } from '../../tracks/services/get-tracks-by-spotify-playlist-id.service';
 
 @Injectable()
 export class GetSamplePlaylistsService {
+  constructor(
+    private readonly spotifyPlaylistService: GetTracksBySpotifyPlaylistId,
+  ) {}
+
   organizeByArtist(tracks: SpotifyTrack[]): PlaylistOrganization {
     const organization: Record<string, SpotifyTrack[]> = {};
 
@@ -91,7 +96,9 @@ export class GetSamplePlaylistsService {
     return range ? range.label : 'Unknown BPM';
   }
 
-  organize(tracks: SpotifyTrack[]): PlaylistOrganization[] {
+  async organize(playlistId: string): Promise<PlaylistOrganization[]> {
+    const tracks =
+      await this.spotifyPlaylistService.getPlaylistTracks(playlistId);
     return [
       this.organizeByArtist(tracks),
       this.organizeByAlbum(tracks),

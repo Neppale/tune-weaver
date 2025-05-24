@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { SpotifyAuthService } from '../../auth/services/spotify-auth.service';
-import { GetSpotifyTrackDataByTrackIdService } from '../../tracks/services/get-spotify-track-data-by-track-id.service';
+import { GetSpotifyTrackDataByTrackIdService } from './get-spotify-track-data-by-track-id.service';
 import { SpotifyTrack } from 'src/interfaces/spotify/track.interface';
 
 interface SpotifyPlaylistResponse {
