@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   SpotifyTrack,
   PlaylistOrganization,
-} from '../interfaces/spotify.interface';
+} from '../../interfaces/spotify.interface';
 
 @Injectable()
 export class PlaylistOrganizerService {

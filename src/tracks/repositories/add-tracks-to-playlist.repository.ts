@@ -1,13 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../services/prisma.service';
-import { IAddTracksToPlaylistRepository } from '../../interfaces/playlist.repository.interface';
+import { PrismaService } from '../../prisma/prisma.service';
 import { Playlist } from '@prisma/client';
-import { AddTracksDto } from '../../dtos/playlist.dto';
+import { AddTracksDto } from '../../playlists/dtos/playlist.dto';
 
 @Injectable()
-export class AddTracksToPlaylistRepository
-  implements IAddTracksToPlaylistRepository
-{
+export class AddTracksToPlaylistRepository {
   constructor(private prisma: PrismaService) {}
 
   async addTracks(playlistId: string, data: AddTracksDto): Promise<Playlist> {

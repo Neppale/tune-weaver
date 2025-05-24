@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../services/prisma.service';
-import { ICreatePlaylistRepository } from '../../interfaces/playlist.repository.interface';
+import { PrismaService } from '../../prisma/prisma.service';
 import { Playlist } from '@prisma/client';
-import { CreatePlaylistDto } from '../../dtos/playlist.dto';
+import { CreatePlaylistDto } from '../dtos/playlist.dto';
 
 @Injectable()
-export class CreatePlaylistRepository implements ICreatePlaylistRepository {
+export class CreatePlaylistRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreatePlaylistDto): Promise<Playlist> {
@@ -27,9 +26,17 @@ export class CreatePlaylistRepository implements ICreatePlaylistRepository {
         }),
         ...(data.sourcePlaylist && {
           sourcePlaylist: {
-            create: {
-              platform: data.sourcePlaylist.platform,
-              platformId: data.sourcePlaylist.platformId,
+            connectOrCreate: {
+              where: {
+                platform_platformId: {
+                  platform: data.sourcePlaylist.platform,
+                  platformId: data.sourcePlaylist.platformId,
+                },
+              },
+              create: {
+                platform: data.sourcePlaylist.platform,
+                platformId: data.sourcePlaylist.platformId,
+              },
             },
           },
         }),

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import SpotifyWebApi from 'spotify-web-api-node';
+import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import {
   Platform,
   PlatformNotSupportedException,
-} from '../exceptions/auth.exception';
+} from '../../exceptions/auth.exception';
 
 export interface PlatformAuthConfig {
   clientId: string;
@@ -33,7 +33,10 @@ export class AuthService {
       });
       this.platformApis.set(
         Platform.SPOTIFY,
-        new SpotifyWebApi(this.platformConfigs.get(Platform.SPOTIFY)),
+        SpotifyApi.withClientCredentials(
+          this.platformConfigs.get(Platform.SPOTIFY).clientId,
+          this.platformConfigs.get(Platform.SPOTIFY).clientSecret,
+        ),
       );
     }
 

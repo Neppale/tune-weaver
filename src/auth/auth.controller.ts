@@ -1,5 +1,5 @@
 import { Controller, Get, Query, Param, ParseEnumPipe } from '@nestjs/common';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from './services/auth.service';
 import {
   Platform,
   InvalidAuthCodeException,
