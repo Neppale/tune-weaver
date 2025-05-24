@@ -7,7 +7,6 @@ export class SpotifyAuthService {
   private readonly baseUrl = 'https://api.spotify.com/v1';
 
   constructor() {
-    // Initialize with client credentials for public endpoints
     this.initializeClientCredentials();
   }
 
@@ -78,9 +77,7 @@ export class SpotifyAuthService {
       return response.data;
     } catch (error) {
       if (error.response?.status === 401) {
-        // Token might be expired, try to refresh
         await this.initializeClientCredentials();
-        // Retry the request with new token
         return this.makeRequest(endpoint, options);
       }
       throw error;

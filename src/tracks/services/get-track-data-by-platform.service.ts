@@ -21,7 +21,7 @@ export class GetTrackDataByPlatformService {
           name: track.name,
           artists: track.artists,
           album: track.album,
-          duration: track.duration_ms / 1000, // Convert to seconds
+          duration: track.duration_ms / 1000,
         }));
       case Platform.YOUTUBE_MUSIC:
         const youtubeMusicTracks =

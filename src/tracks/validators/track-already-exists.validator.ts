@@ -22,7 +22,6 @@ export class TrackAlreadyExistsValidator {
     const existingTracks: ValidationResult['existingTracks'] = [];
     const tracksToValidate: CreateTrackDto[] = [];
 
-    // Group tracks by platform for efficient querying
     const tracksByPlatform = tracks.reduce<Record<Platform, CreateTrackDto[]>>(
       (acc, track) => {
         if (!acc[track.platform]) {
@@ -34,23 +33,19 @@ export class TrackAlreadyExistsValidator {
       {} as Record<Platform, CreateTrackDto[]>,
     );
 
-    // Check each platform's tracks
     for (const [platform, platformTracks] of Object.entries(tracksByPlatform)) {
       const platformIds = platformTracks.map((track) => track.platformId);
 
-      // Find existing tracks for this platform
       const existingPlatformTracks =
         await this.loadTrackPlatformByPlatformIdRepository.load(
           platform as Platform,
           platformIds,
         );
 
-      // Map existing tracks
       const existingIds = new Set(
         existingPlatformTracks.map((t) => t.platformId),
       );
 
-      // Separate existing and new tracks
       platformTracks.forEach((track) => {
         if (existingIds.has(track.platformId)) {
           const existingTrack = existingPlatformTracks.find(

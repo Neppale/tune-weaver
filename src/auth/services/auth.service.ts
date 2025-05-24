@@ -23,7 +23,6 @@ export class AuthService {
   private platformApis: Map<Platform, any> = new Map();
 
   constructor() {
-    // Initialize Spotify
     if (process.env.SPOTIFY_CLIENT_ID) {
       this.platformConfigs.set(Platform.SPOTIFY, {
         clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -39,7 +38,6 @@ export class AuthService {
       );
     }
 
-    // Initialize YouTube Music
     this.platformConfigs.set(Platform.YOUTUBE_MUSIC, {});
     this.platformApis.set(
       Platform.YOUTUBE_MUSIC,
@@ -64,9 +62,6 @@ export class AuthService {
         return api.createAuthorizeURL(scopes, 'state');
       case Platform.YOUTUBE_MUSIC:
         return '';
-      // Add other platforms here
-      // case Platform.SOUNDCLOUD:
-      //   return api.getAuthUrl();
       default:
         throw new PlatformNotSupportedException(platform);
     }
@@ -88,15 +83,6 @@ export class AuthService {
           platform,
         };
       }
-      // Add other platforms here
-      // case Platform.SOUNDCLOUD: {
-      //   const data = await api.getAccessToken(code);
-      //   return {
-      //     accessToken: data.access_token,
-      //     expiresIn: data.expires_in,
-      //     platform,
-      //   };
-      // }
       default:
         throw new PlatformNotSupportedException(platform);
     }
@@ -121,15 +107,6 @@ export class AuthService {
           platform,
         };
       }
-      // Add other platforms here
-      // case Platform.SOUNDCLOUD: {
-      //   const data = await api.refreshToken(refreshToken);
-      //   return {
-      //     accessToken: data.access_token,
-      //     expiresIn: data.expires_in,
-      //     platform,
-      //   };
-      // }
       default:
         throw new PlatformNotSupportedException(platform);
     }

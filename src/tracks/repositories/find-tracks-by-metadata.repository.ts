@@ -81,8 +81,8 @@ export class FindTrackByMetadataRepository {
     scoredTracks.sort((a, b) => b.score - a.score);
 
     const bestMatch = scoredTracks[0];
-    if (bestMatch && bestMatch.score >= 60) {
-      // Require at least 60% match
+    const SCORE_THRESHOLD = 60;
+    if (bestMatch && bestMatch.score >= SCORE_THRESHOLD) {
       return bestMatch.track;
     }
 

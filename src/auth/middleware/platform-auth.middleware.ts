@@ -17,11 +17,9 @@ export class PlatformAuthMiddleware implements NestMiddleware {
 
     try {
       if (!platform) {
-        // If no platform is specified, try to authenticate with all platforms
         this.spotifyAuthService.setAccessToken(auth);
         await this.youtubeMusicAuthService.initialize();
       } else {
-        // If platform is specified, authenticate only with that platform
         switch (platform) {
           case Platform.SPOTIFY:
             this.spotifyAuthService.setAccessToken(auth);
