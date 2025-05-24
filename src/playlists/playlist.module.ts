@@ -1,7 +1,5 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { PlaylistController } from './playlist.controller';
-import { SpotifyAuthService } from '../auth/services/spotify-auth.service';
-import { YoutubeMusicAuthService } from '../auth/services/youtube-music-auth.service';
 import { GetSamplePlaylistsService } from './services/get-sample-playlists.service';
 import { CreatePlaylistService } from './services/create-playlist.service';
 import { PlatformAuthMiddleware } from '../auth/middleware/platform-auth.middleware';
@@ -9,18 +7,14 @@ import { TrackModule } from '../tracks/track.module';
 import { CreatePlaylistRepository } from './repositories/create-playlist.repository';
 import { AuthModule } from '../auth/auth.module';
 import { PrismaModule } from '../prisma/prisma.module';
-import { GetTrackDataByPlatformService } from '../tracks/services/get-track-data-by-platform.service';
 
 @Module({
   imports: [TrackModule, AuthModule, PrismaModule],
   controllers: [PlaylistController],
   providers: [
-    SpotifyAuthService,
-    YoutubeMusicAuthService,
     GetSamplePlaylistsService,
     CreatePlaylistService,
     CreatePlaylistRepository,
-    GetTrackDataByPlatformService,
   ],
 })
 export class PlaylistModule implements NestModule {

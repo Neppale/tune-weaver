@@ -26,7 +26,7 @@ export class YoutubeMusicAuthService {
   }
 
   async getPlaylist(playlistId: string) {
-    return this.ytmusic.getPlaylist(playlistId);
+    return this.ytmusic.getPlaylistVideos(playlistId);
   }
 
   async getArtist(artistId: string) {

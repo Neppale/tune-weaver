@@ -9,6 +9,7 @@ import { GetYouTubeMusicTrackDataByTrackIdService } from './services/get-youtube
 import { GetTrackDataByPlatformService } from './services/get-track-data-by-platform.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { GetTrackIdsByPlaylistIdService } from './services/get-track-ids-by-playlist-id.service';
 
 @Module({
   imports: [PrismaModule, AuthModule],
@@ -21,12 +22,17 @@ import { AuthModule } from 'src/auth/auth.module';
     GetSpotifyTrackDataByTrackIdService,
     GetYouTubeMusicTrackDataByTrackIdService,
     GetTrackDataByPlatformService,
+    GetSpotifyTrackDataByTrackIdService,
+    GetTrackIdsByPlaylistIdService,
   ],
   exports: [
     CreateTracksService,
     LoadTrackPlatformByPlatformIdRepository,
     FindTracksByMetadataRepository,
     GetTrackDataByPlatformService,
+    GetSpotifyTrackDataByTrackIdService,
+    GetYouTubeMusicTrackDataByTrackIdService,
+    GetTrackIdsByPlaylistIdService,
   ],
 })
 export class TrackModule {}

@@ -2,6 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { SpotifyAuthService } from '../services/spotify-auth.service';
 import { YoutubeMusicAuthService } from '../services/youtube-music-auth.service';
+import { Platform } from '@prisma/client';
 
 @Injectable()
 export class PlatformAuthMiddleware implements NestMiddleware {
@@ -11,7 +12,7 @@ export class PlatformAuthMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    const platform = req.headers['x-platform'] as string;
+    const platform = req.query.platform as Platform;
     const auth = req.headers.authorization;
 
     if (!platform || !auth) {
@@ -19,11 +20,11 @@ export class PlatformAuthMiddleware implements NestMiddleware {
     }
 
     try {
-      switch (platform.toLowerCase()) {
-        case 'spotify':
+      switch (platform) {
+        case Platform.SPOTIFY:
           this.spotifyAuthService.setAccessToken(auth);
           break;
-        case 'youtube-music':
+        case Platform.YOUTUBE_MUSIC:
           await this.youtubeMusicAuthService.initialize();
           break;
       }
