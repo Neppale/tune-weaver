@@ -4,7 +4,7 @@ import { CreatePlaylistRepository } from '../../repositories/create-playlist.rep
 import { CreateTracksService } from '../../../tracks/services/create-tracks.service';
 import { GetTrackDataByPlatformService } from '../../../tracks/services/get-track-data-by-platform.service';
 import { LoadTrackPlatformByPlatformIdRepository } from '../../../tracks/repositories/load-track-platform-by-platform-id.repository';
-import { FindTracksByMetadataRepository } from '../../../tracks/repositories/find-tracks-by-metadata.repository';
+import { FindTrackByMetadataRepository } from '../../../tracks/repositories/find-tracks-by-metadata.repository';
 import { mockTrackData } from '../mocks/track-data.mock';
 import {
   mockEmptyPlaylistData,
@@ -24,7 +24,7 @@ describe('CreatePlaylistService', () => {
   let createTracksService: jest.Mocked<CreateTracksService>;
   let getTrackDataByPlatformService: jest.Mocked<GetTrackDataByPlatformService>;
   let loadTrackPlatformByPlatformIdRepository: jest.Mocked<LoadTrackPlatformByPlatformIdRepository>;
-  let findTracksByMetadataRepository: jest.Mocked<FindTracksByMetadataRepository>;
+  let findTracksByMetadataRepository: jest.Mocked<FindTrackByMetadataRepository>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -55,7 +55,7 @@ describe('CreatePlaylistService', () => {
           },
         },
         {
-          provide: FindTracksByMetadataRepository,
+          provide: FindTrackByMetadataRepository,
           useValue: {
             findSimilarTracks: jest.fn(),
           },
@@ -70,7 +70,7 @@ describe('CreatePlaylistService', () => {
     loadTrackPlatformByPlatformIdRepository = module.get(
       LoadTrackPlatformByPlatformIdRepository,
     );
-    findTracksByMetadataRepository = module.get(FindTracksByMetadataRepository);
+    findTracksByMetadataRepository = module.get(FindTrackByMetadataRepository);
   });
 
   it('should call createPlaylistRepository.create once when tracks are empty', async () => {
@@ -97,7 +97,7 @@ describe('CreatePlaylistService', () => {
   it('should call getTrackDataByPlatformService.get once when tracks are not empty', async () => {
     loadTrackPlatformByPlatformIdRepository.load.mockResolvedValue([]);
     getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
-    findTracksByMetadataRepository.findSimilarTracks.mockResolvedValue([]);
+    findTracksByMetadataRepository.find.mockResolvedValue([]);
     createTracksService.create.mockResolvedValue({
       newTracks: [mockNewTrack],
       newTrackPlatforms: [mockNewTrackPlatform],
@@ -112,22 +112,18 @@ describe('CreatePlaylistService', () => {
   it('should call findTracksByMetadataRepository.findSimilarTracks once when tracks are not empty', async () => {
     loadTrackPlatformByPlatformIdRepository.load.mockResolvedValue([]);
     getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
-    findTracksByMetadataRepository.findSimilarTracks.mockResolvedValue([
-      mockSimilarTrack,
-    ]);
+    findTracksByMetadataRepository.find.mockResolvedValue([mockSimilarTrack]);
     createPlaylistRepository.create.mockResolvedValue(mockPlaylistResponse);
 
     await service.create(mockPlaylistData);
 
-    expect(
-      findTracksByMetadataRepository.findSimilarTracks,
-    ).toHaveBeenCalledTimes(1);
+    expect(findTracksByMetadataRepository.find).toHaveBeenCalledTimes(1);
   });
 
   it('should call createTracksService.create once when tracks are not empty', async () => {
     loadTrackPlatformByPlatformIdRepository.load.mockResolvedValue([]);
     getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
-    findTracksByMetadataRepository.findSimilarTracks.mockResolvedValue([]);
+    findTracksByMetadataRepository.find.mockResolvedValue([]);
     createTracksService.create.mockResolvedValue({
       newTracks: [mockNewTrack],
       newTrackPlatforms: [mockNewTrackPlatform],
@@ -142,7 +138,7 @@ describe('CreatePlaylistService', () => {
   it('should call createPlaylistRepository.create once when tracks are not empty', async () => {
     loadTrackPlatformByPlatformIdRepository.load.mockResolvedValue([]);
     getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
-    findTracksByMetadataRepository.findSimilarTracks.mockResolvedValue([]);
+    findTracksByMetadataRepository.find.mockResolvedValue([]);
     createTracksService.create.mockResolvedValue({
       newTracks: [mockNewTrack],
       newTrackPlatforms: [mockNewTrackPlatform],

@@ -8,42 +8,46 @@ export class CreatePlaylistRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreatePlaylistDto): Promise<Playlist> {
-    const playlist = await this.prisma.playlist.create({
-      data: {
-        name: data.name,
-        user: {
-          connect: { id: data.userId },
-        },
-        ...(data.sourcePlaylist && {
-          sourcePlaylist: {
-            connectOrCreate: {
-              where: {
-                platform_platformId: {
+    return this.prisma.$transaction(async (tx) => {
+      const playlist = await tx.playlist.create({
+        data: {
+          name: data.name,
+          user: {
+            connect: { id: data.userId },
+          },
+          ...(data.sourcePlaylist && {
+            sourcePlaylist: {
+              connectOrCreate: {
+                where: {
+                  platform_platformId: {
+                    platform: data.sourcePlaylist.platform,
+                    platformId: data.sourcePlaylist.platformId,
+                  },
+                },
+                create: {
                   platform: data.sourcePlaylist.platform,
                   platformId: data.sourcePlaylist.platformId,
                 },
               },
-              create: {
-                platform: data.sourcePlaylist.platform,
-                platformId: data.sourcePlaylist.platformId,
-              },
             },
-          },
-        }),
-      },
-      include: {
-        tracks: true,
-        sourcePlaylist: true,
-      },
-    });
+          }),
+        },
+        include: {
+          tracks: true,
+          sourcePlaylist: true,
+        },
+      });
 
-    await this.prisma.playlistTrack.createMany({
-      data: data.existingTrackIds.map((trackId) => ({
-        playlistId: playlist.id,
-        trackId,
-      })),
-    });
+      if (data.existingTrackIds?.length > 0) {
+        await tx.playlistTrack.createMany({
+          data: data.existingTrackIds.map((trackId) => ({
+            playlistId: playlist.id,
+            trackId,
+          })),
+        });
+      }
 
-    return playlist;
+      return playlist;
+    });
   }
 }

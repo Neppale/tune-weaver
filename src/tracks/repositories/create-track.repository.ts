@@ -36,18 +36,10 @@ export class CreateTrackRepository {
             album: track.album,
             duration: track.duration,
             platforms: {
-              connectOrCreate: tracks.map((track) => ({
-                where: {
-                  platform_platformId: {
-                    platform: track.platform,
-                    platformId: track.platformId,
-                  },
-                },
-                create: {
-                  platform: track.platform,
-                  platformId: track.platformId,
-                },
-              })),
+              create: {
+                platform: track.platform,
+                platformId: track.platformId,
+              },
             },
           },
           include: {

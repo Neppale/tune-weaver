@@ -7,6 +7,7 @@ import { TrackModule } from '../tracks/track.module';
 import { CreatePlaylistRepository } from './repositories/create-playlist.repository';
 import { AuthModule } from '../auth/auth.module';
 import { PrismaModule } from '../prisma/prisma.module';
+import { CreateTrackPlatformRepository } from 'src/tracks/repositories/create-track-platform.repository';
 
 @Module({
   imports: [TrackModule, AuthModule, PrismaModule],
@@ -15,6 +16,7 @@ import { PrismaModule } from '../prisma/prisma.module';
     GetSamplePlaylistsService,
     CreatePlaylistService,
     CreatePlaylistRepository,
+    CreateTrackPlatformRepository,
   ],
 })
 export class PlaylistModule implements NestModule {

@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateTracksService } from './services/create-tracks.service';
 import { CreateTrackRepository } from './repositories/create-track.repository';
 import { LoadTrackPlatformByPlatformIdRepository } from './repositories/load-track-platform-by-platform-id.repository';
-import { FindTracksByMetadataRepository } from './repositories/find-tracks-by-metadata.repository';
+import { FindTrackByMetadataRepository } from './repositories/find-tracks-by-metadata.repository';
 import { GetSpotifyTrackDataByTrackIdService } from './services/get-spotify-track-data-by-track-id.service';
 import { GetYouTubeMusicTrackDataByTrackIdService } from './services/get-youtube-music-track-data-by-track-id.service';
 import { GetTrackDataByPlatformService } from './services/get-track-data-by-platform.service';
@@ -18,7 +18,7 @@ import { GetTrackIdsByPlaylistIdService } from './services/get-track-ids-by-play
     CreateTracksService,
     CreateTrackRepository,
     LoadTrackPlatformByPlatformIdRepository,
-    FindTracksByMetadataRepository,
+    FindTrackByMetadataRepository,
     GetSpotifyTrackDataByTrackIdService,
     GetYouTubeMusicTrackDataByTrackIdService,
     GetTrackDataByPlatformService,
@@ -28,7 +28,7 @@ import { GetTrackIdsByPlaylistIdService } from './services/get-track-ids-by-play
   exports: [
     CreateTracksService,
     LoadTrackPlatformByPlatformIdRepository,
-    FindTracksByMetadataRepository,
+    FindTrackByMetadataRepository,
     GetTrackDataByPlatformService,
     GetSpotifyTrackDataByTrackIdService,
     GetYouTubeMusicTrackDataByTrackIdService,

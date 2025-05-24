@@ -5,8 +5,9 @@ import { Playlist, Platform } from '@prisma/client';
 import { CreateTracksService } from '../../tracks/services/create-tracks.service';
 import { CreateTrackDto as TrackCreateTrackDto } from '../../tracks/dtos/create-track.dto';
 import { LoadTrackPlatformByPlatformIdRepository } from '../../tracks/repositories/load-track-platform-by-platform-id.repository';
-import { FindTracksByMetadataRepository } from '../../tracks/repositories/find-tracks-by-metadata.repository';
+import { FindTrackByMetadataRepository } from '../../tracks/repositories/find-tracks-by-metadata.repository';
 import { GetTrackDataByPlatformService } from '../../tracks/services/get-track-data-by-platform.service';
+import { CreateTrackPlatformRepository } from '../../tracks/repositories/create-track-platform.repository';
 
 interface TrackMatch {
   trackId: string;
@@ -21,7 +22,8 @@ export class CreatePlaylistService {
     private readonly createTracksService: CreateTracksService,
     private readonly getTrackDataByPlatformService: GetTrackDataByPlatformService,
     private readonly loadTrackPlatformByPlatformIdRepository: LoadTrackPlatformByPlatformIdRepository,
-    private readonly findTracksByMetadataRepository: FindTracksByMetadataRepository,
+    private readonly findTrackByMetadataRepository: FindTrackByMetadataRepository,
+    private readonly createTrackPlatformRepository: CreateTrackPlatformRepository,
   ) {}
 
   async create(data: CreatePlaylistDto): Promise<Playlist> {
@@ -69,13 +71,19 @@ export class CreatePlaylistService {
       const tracksWithData = await Promise.all(trackDataPromises);
 
       for (const track of tracksWithData) {
-        const similarTracks =
-          await this.findTracksByMetadataRepository.findSimilarTracks(track);
+        const similarTrack =
+          await this.findTrackByMetadataRepository.find(track);
 
-        if (similarTracks.length > 0) {
-          const matchedTrack = similarTracks[0];
+        if (similarTrack) {
+          // Create a new platform entry for the similar track
+          await this.createTrackPlatformRepository.create({
+            trackId: similarTrack.id,
+            platform: track.platform,
+            platformId: track.platformId,
+          });
+
           existingTracks.push({
-            trackId: matchedTrack.id,
+            trackId: similarTrack.id,
             platform: track.platform,
             platformId: track.platformId,
           });
