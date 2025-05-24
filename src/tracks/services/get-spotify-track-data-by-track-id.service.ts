@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SpotifyTrack } from '../../interfaces/spotify.interface';
+import { SpotifyTrack } from 'src/interfaces/spotify/track.interface';
 import { SpotifyAuthService } from '../../auth/services/spotify-auth.service';
 
 interface SpotifyTrackResponse {

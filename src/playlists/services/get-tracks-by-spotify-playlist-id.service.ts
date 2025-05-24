@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { SpotifyTrack } from '../../interfaces/spotify.interface';
 import { SpotifyAuthService } from '../../auth/services/spotify-auth.service';
 import { GetSpotifyTrackDataByTrackIdService } from '../../tracks/services/get-spotify-track-data-by-track-id.service';
+import { SpotifyTrack } from 'src/interfaces/spotify/track.interface';
 
 interface SpotifyPlaylistResponse {
   tracks: {
@@ -14,7 +14,7 @@ interface SpotifyPlaylistResponse {
 }
 
 @Injectable()
-export class SpotifyPlaylistService {
+export class GetTracksBySpotifyPlaylistId {
   constructor(
     private readonly spotifyAuthService: SpotifyAuthService,
     private readonly spotifyTrackService: GetSpotifyTrackDataByTrackIdService,

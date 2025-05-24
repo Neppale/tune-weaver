@@ -1,14 +1,5 @@
 import { Platform } from '@prisma/client';
 
-export class CreatePlaylistDto {
-  name: string;
-  type: string;
-  value?: string;
-  userId: string;
-  tracks?: CreateTrackDto[];
-  sourcePlaylist?: CreateSourcePlaylistDto;
-}
-
 export class CreateTrackDto {
   platform: Platform;
   platformId: string;
