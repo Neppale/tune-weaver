@@ -29,7 +29,6 @@ export class CreatePlaylistService {
       return this.createPlaylistRepository.create(data);
     }
 
-    // Step 1: Check for existing tracks by platform ID
     const existingTracks: TrackMatch[] = [];
     const tracksToProcess: CreatePlaylistDto['tracks'] = [];
 
@@ -51,7 +50,6 @@ export class CreatePlaylistService {
       }
     }
 
-    // Step 2: Get data for remaining tracks and check for metadata matches
     if (tracksToProcess.length > 0) {
       const trackDataPromises = tracksToProcess.map(async (track) => {
         const trackData = await this.getTrackDataByPlatformService.get(
@@ -70,13 +68,11 @@ export class CreatePlaylistService {
 
       const tracksWithData = await Promise.all(trackDataPromises);
 
-      // Check for metadata matches
       for (const track of tracksWithData) {
         const similarTracks =
           await this.findTracksByMetadataRepository.findSimilarTracks(track);
 
         if (similarTracks.length > 0) {
-          // Use the first matching track
           const matchedTrack = similarTracks[0];
           existingTracks.push({
             trackId: matchedTrack.id,
@@ -84,7 +80,6 @@ export class CreatePlaylistService {
             platformId: track.platformId,
           });
         } else {
-          // Create new track
           const { newTracks } = await this.createTracksService.create([track]);
           existingTracks.push({
             trackId: newTracks[0].id,
@@ -95,7 +90,6 @@ export class CreatePlaylistService {
       }
     }
 
-    // Step 3: Create playlist with all matched/created tracks
     return this.createPlaylistRepository.create({
       ...data,
       existingTrackIds: existingTracks.map((track) => track.trackId),
