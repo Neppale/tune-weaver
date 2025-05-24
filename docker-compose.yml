@@ -1,0 +1,20 @@
+version: '3'
+name: tune-weaver
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_SCHEMA: tune-weaver
+    ports:
+      - '5432:5432'
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - '6379:6379'
+    command: redis-server --bind 0.0.0.0
