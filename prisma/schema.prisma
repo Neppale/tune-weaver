@@ -39,8 +39,6 @@ model Playlist {
   tracks        Track[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-
-  @@unique([type, value, userId])
 }
 
 model SourcePlaylist {

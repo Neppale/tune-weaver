@@ -13,6 +13,7 @@ import { AddTracksToPlaylistRepository } from './tracks/repositories/add-tracks-
 import { RemoveTrackFromPlaylistRepository } from './tracks/repositories/remove-track-from-playlist.repository';
 import { CreatePlaylistService } from './playlists/services/create-playlist.service';
 import { ValidatePlaylistTracksValidator } from './tracks/validators/validate-playlist-tracks.validator';
+import { YoutubeMusicAuthService } from './auth/services/youtube-music-auth.service';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ValidatePlaylistTracksValidator } from './tracks/validators/validate-pl
     RemoveTrackFromPlaylistRepository,
     CreatePlaylistService,
     ValidatePlaylistTracksValidator,
+    YoutubeMusicAuthService,
   ],
 })
 export class AppModule {}

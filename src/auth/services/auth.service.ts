@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
-import {
-  Platform,
-  PlatformNotSupportedException,
-} from '../../exceptions/auth.exception';
+import { Platform } from '@prisma/client';
+import { PlatformNotSupportedException } from '../../exceptions/auth.exception';
+import { YoutubeMusicAuthService } from 'src/auth/services/youtube-music-auth.service';
 
 export interface PlatformAuthConfig {
-  clientId: string;
-  clientSecret: string;
-  redirectUri: string;
+  clientId?: string;
+  clientSecret?: string;
+  redirectUri?: string;
 }
 
 export interface AuthTokens {
@@ -40,12 +39,12 @@ export class AuthService {
       );
     }
 
-    // Add other platforms here as they are implemented
-    // Example:
-    // if (process.env.SOUNDCLOUD_CLIENT_ID) {
-    //   this.platformConfigs.set(Platform.SOUNDCLOUD, {...});
-    //   this.platformApis.set(Platform.SOUNDCLOUD, new SoundCloudAPI(...));
-    // }
+    // Initialize YouTube Music
+    this.platformConfigs.set(Platform.YOUTUBE_MUSIC, {});
+    this.platformApis.set(
+      Platform.YOUTUBE_MUSIC,
+      new YoutubeMusicAuthService(),
+    );
   }
 
   getAuthUrl(platform: Platform): string {
@@ -63,6 +62,8 @@ export class AuthService {
           'user-read-email',
         ];
         return api.createAuthorizeURL(scopes, 'state');
+      case Platform.YOUTUBE_MUSIC:
+        return '';
       // Add other platforms here
       // case Platform.SOUNDCLOUD:
       //   return api.getAuthUrl();

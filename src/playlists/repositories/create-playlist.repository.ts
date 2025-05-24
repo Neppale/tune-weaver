@@ -18,9 +18,17 @@ export class CreatePlaylistRepository {
         },
         ...(data.tracks && {
           tracks: {
-            create: data.tracks.map((track) => ({
-              platform: track.platform,
-              platformId: track.platformId,
+            connectOrCreate: data.tracks.map((track) => ({
+              where: {
+                platform_platformId: {
+                  platform: track.platform,
+                  platformId: track.platformId,
+                },
+              },
+              create: {
+                platform: track.platform,
+                platformId: track.platformId,
+              },
             })),
           },
         }),

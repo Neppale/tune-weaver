@@ -1,7 +1,7 @@
 import { Controller, Get, Query, Param, ParseEnumPipe } from '@nestjs/common';
 import { AuthService } from './services/auth.service';
+import { Platform } from '@prisma/client';
 import {
-  Platform,
   InvalidAuthCodeException,
   InvalidRefreshTokenException,
 } from '../exceptions/auth.exception';

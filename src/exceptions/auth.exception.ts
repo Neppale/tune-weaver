@@ -1,11 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-
-export enum Platform {
-  SPOTIFY = 'spotify',
-  // Add more platforms here as they are implemented
-  // SOUNDCLOUD = 'soundcloud',
-  // APPLE_MUSIC = 'apple_music',
-}
+import { Platform } from '@prisma/client';
 
 export class AuthException extends HttpException {
   constructor(message: string, platform?: Platform) {

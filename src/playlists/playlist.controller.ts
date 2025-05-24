@@ -5,6 +5,7 @@ import { GetSamplePlaylistsService } from './services/get-sample-playlists.servi
 import { PlaylistOrganization } from '../interfaces/spotify/playlist-organization.interface';
 import { CreatePlaylistDto } from './dtos/create-playlist.dto';
 import { CreatePlaylistService } from './services/create-playlist.service';
+import { YoutubeMusicAuthService } from 'src/auth/services/youtube-music-auth.service';
 
 @Controller('playlist')
 export class PlaylistController {
@@ -13,6 +14,7 @@ export class PlaylistController {
     private readonly spotifyPlaylistService: GetTracksBySpotifyPlaylistId,
     private readonly getSamplePlaylistsService: GetSamplePlaylistsService,
     private readonly createPlaylistService: CreatePlaylistService,
+    private readonly youtubeMusicAuthService: YoutubeMusicAuthService,
   ) {}
 
   @Get('sample/:playlistId')
@@ -28,6 +30,7 @@ export class PlaylistController {
 
   @Post('create')
   async create(@Body() body: CreatePlaylistDto) {
+    this.youtubeMusicAuthService.initialize();
     return this.createPlaylistService.create(body);
   }
 }
