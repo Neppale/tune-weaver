@@ -1,7 +1,14 @@
 import { Platform } from '@prisma/client';
+import { IsEnum, IsString } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateTrackDto {
+  @IsNotEmpty()
+  @IsEnum(Platform)
   platform: Platform;
+
+  @IsNotEmpty()
+  @IsString()
   platformId: string;
 }
 

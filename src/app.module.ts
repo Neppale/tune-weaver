@@ -12,6 +12,7 @@ import { CreatePlaylistRepository } from './playlists/repositories/create-playli
 import { AddTracksToPlaylistRepository } from './tracks/repositories/add-tracks-to-playlist.repository';
 import { RemoveTrackFromPlaylistRepository } from './tracks/repositories/remove-track-from-playlist.repository';
 import { CreatePlaylistService } from './playlists/services/create-playlist.service';
+import { ValidatePlaylistTracksValidator } from './tracks/validators/validate-playlist-tracks.validator';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CreatePlaylistService } from './playlists/services/create-playlist.serv
     AddTracksToPlaylistRepository,
     RemoveTrackFromPlaylistRepository,
     CreatePlaylistService,
+    ValidatePlaylistTracksValidator,
   ],
 })
 export class AppModule {}
