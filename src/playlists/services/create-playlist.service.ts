@@ -4,9 +4,9 @@ import { CreatePlaylistDto } from '../dtos/create-playlist.dto';
 import { Playlist, Platform } from '@prisma/client';
 import { CreateTracksService } from '../../tracks/services/create-tracks.service';
 import { CreateTrackDto as TrackCreateTrackDto } from '../../tracks/dtos/create-track.dto';
-import { GetSpotifyTrackDataByTrackIdService } from '../../tracks/services/get-spotify-track-data-by-track-id.service';
 import { LoadTrackPlatformByPlatformIdRepository } from '../../tracks/repositories/load-track-platform-by-platform-id.repository';
 import { FindTracksByMetadataRepository } from '../../tracks/repositories/find-tracks-by-metadata.repository';
+import { GetTrackDataByPlatformService } from '../../tracks/services/get-track-data-by-platform.service';
 
 interface TrackMatch {
   trackId: string;
@@ -19,7 +19,7 @@ export class CreatePlaylistService {
   constructor(
     private readonly createPlaylistRepository: CreatePlaylistRepository,
     private readonly createTracksService: CreateTracksService,
-    private readonly getSpotifyTrackDataByTrackIdService: GetSpotifyTrackDataByTrackIdService,
+    private readonly getTrackDataByPlatformService: GetTrackDataByPlatformService,
     private readonly loadTrackPlatformByPlatformIdRepository: LoadTrackPlatformByPlatformIdRepository,
     private readonly findTracksByMetadataRepository: FindTracksByMetadataRepository,
   ) {}
@@ -54,16 +54,17 @@ export class CreatePlaylistService {
     // Step 2: Get data for remaining tracks and check for metadata matches
     if (tracksToProcess.length > 0) {
       const trackDataPromises = tracksToProcess.map(async (track) => {
-        const trackData = await this.getSpotifyTrackDataByTrackIdService.get([
-          track.platformId,
-        ]);
+        const trackData = await this.getTrackDataByPlatformService.get(
+          track.platform,
+          [track.platformId],
+        );
         return {
           platform: track.platform,
           platformId: track.platformId,
           name: trackData[0].name,
           artist: trackData[0].artists[0].name,
           album: trackData[0].album?.name,
-          duration: trackData[0].duration_ms / 1000,
+          duration: trackData[0].duration,
         } as TrackCreateTrackDto;
       });
 

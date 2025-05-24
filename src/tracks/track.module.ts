@@ -8,7 +8,6 @@ import { GetTracksBySpotifyPlaylistId } from './services/get-tracks-by-spotify-p
 import { CreateTracksService } from './services/create-tracks.service';
 import { TrackAlreadyExistsValidator } from './validators/track-already-exists.validator';
 import { LoadTrackPlatformByPlatformIdRepository } from './repositories/load-track-platform-by-platform-id.repository';
-import { CreateTrackRepository } from './repositories/create-track.repository';
 import { FindTracksByMetadataRepository } from './repositories/find-tracks-by-metadata.repository';
 
 @Module({
@@ -21,7 +20,6 @@ import { FindTracksByMetadataRepository } from './repositories/find-tracks-by-me
     CreateTracksService,
     TrackAlreadyExistsValidator,
     LoadTrackPlatformByPlatformIdRepository,
-    CreateTrackRepository,
     FindTracksByMetadataRepository,
   ],
   exports: [
@@ -32,7 +30,6 @@ import { FindTracksByMetadataRepository } from './repositories/find-tracks-by-me
     CreateTracksService,
     TrackAlreadyExistsValidator,
     LoadTrackPlatformByPlatformIdRepository,
-    CreateTrackRepository,
     FindTracksByMetadataRepository,
   ],
 })

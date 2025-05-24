@@ -27,6 +27,11 @@ export class FindTracksByMetadataRepository {
       include: {
         platforms: true,
       },
+      orderBy: {
+        playlists: {
+          _count: 'asc',
+        },
+      },
     });
   }
 }
