@@ -1,0 +1,54 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { GetSamplePlaylistsService } from '../../services/get-sample-playlists.service';
+import { GetTrackIdsByPlaylistIdService } from '../../../tracks/services/get-track-ids-by-playlist-id.service';
+import { GetTrackDataByPlatformService } from '../../../tracks/services/get-track-data-by-platform.service';
+import { Platform } from '@prisma/client';
+import { mockTrackData } from '../mocks/track-data.mock';
+
+describe('GetSamplePlaylistsService', () => {
+  let service: GetSamplePlaylistsService;
+  let getTrackIdsByPlaylistIdService: jest.Mocked<GetTrackIdsByPlaylistIdService>;
+  let getTrackDataByPlatformService: jest.Mocked<GetTrackDataByPlatformService>;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        GetSamplePlaylistsService,
+        {
+          provide: GetTrackIdsByPlaylistIdService,
+          useValue: {
+            get: jest.fn(),
+          },
+        },
+        {
+          provide: GetTrackDataByPlatformService,
+          useValue: {
+            get: jest.fn(),
+          },
+        },
+      ],
+    }).compile();
+
+    service = module.get<GetSamplePlaylistsService>(GetSamplePlaylistsService);
+    getTrackIdsByPlaylistIdService = module.get(GetTrackIdsByPlaylistIdService);
+    getTrackDataByPlatformService = module.get(GetTrackDataByPlatformService);
+  });
+
+  it('should call getTrackIdsByPlaylistIdService.get once', async () => {
+    getTrackIdsByPlaylistIdService.get.mockResolvedValue(['track1']);
+    getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
+
+    await service.get(Platform.SPOTIFY, 'playlist1');
+
+    expect(getTrackIdsByPlaylistIdService.get).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call getTrackDataByPlatformService.get once', async () => {
+    getTrackIdsByPlaylistIdService.get.mockResolvedValue(['track1']);
+    getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
+
+    await service.get(Platform.SPOTIFY, 'playlist1');
+
+    expect(getTrackDataByPlatformService.get).toHaveBeenCalledTimes(1);
+  });
+});
