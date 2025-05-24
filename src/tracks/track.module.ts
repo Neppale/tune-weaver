@@ -1,36 +1,32 @@
 import { Module } from '@nestjs/common';
-import { GetSpotifyTrackDataByTrackIdService } from './services/get-spotify-track-data-by-track-id.service';
-import { RemoveTrackFromPlaylistRepository } from './repositories/remove-track-from-playlist.repository';
-import { ValidatePlaylistTracksValidator } from './validators/validate-playlist-tracks.validator';
-import { PrismaModule } from '../prisma/prisma.module';
-import { AuthModule } from '../auth/auth.module';
-import { GetTracksBySpotifyPlaylistId } from './services/get-tracks-by-spotify-playlist-id.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateTracksService } from './services/create-tracks.service';
-import { TrackAlreadyExistsValidator } from './validators/track-already-exists.validator';
+import { CreateTrackRepository } from './repositories/create-track.repository';
 import { LoadTrackPlatformByPlatformIdRepository } from './repositories/load-track-platform-by-platform-id.repository';
 import { FindTracksByMetadataRepository } from './repositories/find-tracks-by-metadata.repository';
+import { GetSpotifyTrackDataByTrackIdService } from './services/get-spotify-track-data-by-track-id.service';
+import { GetYouTubeMusicTrackDataByTrackIdService } from './services/get-youtube-music-track-data-by-track-id.service';
+import { GetTrackDataByPlatformService } from './services/get-track-data-by-platform.service';
+import { PrismaModule } from 'src/prisma/prisma.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [PrismaModule, AuthModule],
   providers: [
-    GetSpotifyTrackDataByTrackIdService,
-    RemoveTrackFromPlaylistRepository,
-    ValidatePlaylistTracksValidator,
-    GetTracksBySpotifyPlaylistId,
+    PrismaService,
     CreateTracksService,
-    TrackAlreadyExistsValidator,
+    CreateTrackRepository,
     LoadTrackPlatformByPlatformIdRepository,
     FindTracksByMetadataRepository,
+    GetSpotifyTrackDataByTrackIdService,
+    GetYouTubeMusicTrackDataByTrackIdService,
+    GetTrackDataByPlatformService,
   ],
   exports: [
-    GetSpotifyTrackDataByTrackIdService,
-    RemoveTrackFromPlaylistRepository,
-    ValidatePlaylistTracksValidator,
-    GetTracksBySpotifyPlaylistId,
     CreateTracksService,
-    TrackAlreadyExistsValidator,
     LoadTrackPlatformByPlatformIdRepository,
     FindTracksByMetadataRepository,
+    GetTrackDataByPlatformService,
   ],
 })
 export class TrackModule {}

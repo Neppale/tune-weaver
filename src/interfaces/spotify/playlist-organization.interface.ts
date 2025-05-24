@@ -1,6 +1,6 @@
-import { SpotifyTrack } from './track.interface';
+import { TrackData } from 'src/tracks/interfaces/track-data.interface';
 
 export interface PlaylistOrganization {
   type: 'artist' | 'album' | 'genre' | 'bpm';
-  data: Record<string, SpotifyTrack[]>;
+  data: Record<string, TrackData[]>;
 }

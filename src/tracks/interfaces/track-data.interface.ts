@@ -11,4 +11,6 @@ export interface TrackData {
     releaseDate: string;
   };
   duration: number;
+  tempo?: number;
+  genres?: string[];
 }

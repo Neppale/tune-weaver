@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { SpotifyTrack } from 'src/interfaces/spotify/track.interface';
+import { Platform } from '@prisma/client';
+import { GetTrackDataByPlatformService } from '../../tracks/services/get-track-data-by-platform.service';
+import { TrackData } from '../../tracks/interfaces/track-data.interface';
 import { PlaylistOrganization } from 'src/interfaces/spotify/playlist-organization.interface';
-import { GetTracksBySpotifyPlaylistId } from '../../tracks/services/get-tracks-by-spotify-playlist-id.service';
 
 @Injectable()
 export class GetSamplePlaylistsService {
   constructor(
-    private readonly spotifyPlaylistService: GetTracksBySpotifyPlaylistId,
+    private readonly getTrackDataByPlatformService: GetTrackDataByPlatformService,
   ) {}
 
-  organizeByArtist(tracks: SpotifyTrack[]): PlaylistOrganization {
-    const organization: Record<string, SpotifyTrack[]> = {};
+  organizeByArtist(tracks: TrackData[]): PlaylistOrganization {
+    const organization: Record<string, TrackData[]> = {};
 
     tracks.forEach((track) => {
       track.artists.forEach((artist) => {
@@ -27,8 +28,8 @@ export class GetSamplePlaylistsService {
     };
   }
 
-  organizeByAlbum(tracks: SpotifyTrack[]): PlaylistOrganization {
-    const organization: Record<string, SpotifyTrack[]> = {};
+  organizeByAlbum(tracks: TrackData[]): PlaylistOrganization {
+    const organization: Record<string, TrackData[]> = {};
 
     tracks.forEach((track) => {
       if (!organization[track.album.name]) {
@@ -43,8 +44,8 @@ export class GetSamplePlaylistsService {
     };
   }
 
-  organizeByGenre(tracks: SpotifyTrack[]): PlaylistOrganization {
-    const organization: Record<string, SpotifyTrack[]> = {};
+  organizeByGenre(tracks: TrackData[]): PlaylistOrganization {
+    const organization: Record<string, TrackData[]> = {};
 
     tracks.forEach((track) => {
       track.genres?.forEach((genre) => {
@@ -61,8 +62,8 @@ export class GetSamplePlaylistsService {
     };
   }
 
-  organizeByBPM(tracks: SpotifyTrack[]): PlaylistOrganization {
-    const organization: Record<string, SpotifyTrack[]> = {};
+  organizeByBPM(tracks: TrackData[]): PlaylistOrganization {
+    const organization: Record<string, TrackData[]> = {};
 
     tracks.forEach((track) => {
       if (track.tempo) {
@@ -96,9 +97,13 @@ export class GetSamplePlaylistsService {
     return range ? range.label : 'Unknown BPM';
   }
 
-  async organize(playlistId: string): Promise<PlaylistOrganization[]> {
-    const tracks =
-      await this.spotifyPlaylistService.getPlaylistTracks(playlistId);
+  async get(
+    platform: Platform,
+    playlistId: string,
+  ): Promise<PlaylistOrganization[]> {
+    const tracks = await this.getTrackDataByPlatformService.get(platform, [
+      playlistId,
+    ]);
     return [
       this.organizeByArtist(tracks),
       this.organizeByAlbum(tracks),

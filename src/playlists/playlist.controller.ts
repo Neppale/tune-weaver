@@ -1,8 +1,9 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
 import { GetSamplePlaylistsService } from './services/get-sample-playlists.service';
-import { PlaylistOrganization } from '../interfaces/spotify/playlist-organization.interface';
 import { CreatePlaylistDto } from './dtos/create-playlist.dto';
 import { CreatePlaylistService } from './services/create-playlist.service';
+import { Platform } from '@prisma/client';
+import { PlaylistOrganization } from '../interfaces/spotify/playlist-organization.interface';
 
 @Controller('playlist')
 export class PlaylistController {
@@ -14,8 +15,9 @@ export class PlaylistController {
   @Get('sample/:playlistId')
   async sample(
     @Param('playlistId') playlistId: string,
+    @Query('platform') platform: Platform,
   ): Promise<PlaylistOrganization[]> {
-    return this.getSamplePlaylistsService.organize(playlistId);
+    return this.getSamplePlaylistsService.get(platform, playlistId);
   }
 
   @Post('create')
