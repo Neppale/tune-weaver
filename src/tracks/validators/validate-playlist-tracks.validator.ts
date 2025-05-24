@@ -16,38 +16,94 @@ export class ValidatePlaylistTracksValidator {
   ) {}
 
   async validate(tracks: CreateTrackDto[]): Promise<void> {
-    for (const track of tracks) {
-      if (track.platform === Platform.SPOTIFY) {
-        try {
-          await this.spotifyAuthService.makeRequest(
-            `/tracks/${track.platformId}`,
-          );
-        } catch (error) {
-          if (error.response?.status === 400) {
-            throw new BadRequestException({
-              message: `At least one of the songs from Spotify is invalid.`,
-            });
-          }
-          throw new BadGatewayException({
-            message: `Something went wrong while validating the songs from Spotify.`,
-          });
-        }
-      }
+    const spotifyTracks = tracks.filter(
+      (track) => track.platform === Platform.SPOTIFY,
+    );
+    const youtubeTracks = tracks.filter(
+      (track) => track.platform === Platform.YOUTUBE_MUSIC,
+    );
 
-      if (track.platform === Platform.YOUTUBE_MUSIC) {
-        try {
-          await this.youtubeMusicAuthService.getTrack(track.platformId);
-        } catch (error) {
-          if (error.message?.includes('Invalid videoId')) {
-            throw new BadRequestException({
-              message: `At least one of the songs from YouTube Music is invalid.`,
-            });
+    const [spotifyResults, youtubeResults] = await Promise.all([
+      this.validateSpotifyTracks(spotifyTracks),
+      this.validateYoutubeTracks(youtubeTracks),
+    ]);
+
+    const errors: string[] = [];
+
+    if (spotifyResults.failed.length > 0) {
+      errors.push(
+        `Invalid Spotify tracks: ${spotifyResults.failed.join(', ')}`,
+      );
+    }
+
+    if (youtubeResults.failed.length > 0) {
+      errors.push(
+        `Invalid YouTube Music tracks: ${youtubeResults.failed.join(', ')}`,
+      );
+    }
+
+    if (errors.length > 0) {
+      throw new BadRequestException({
+        message: errors.join('. '),
+      });
+    }
+  }
+
+  private async validateSpotifyTracks(
+    tracks: CreateTrackDto[],
+  ): Promise<{ failed: string[] }> {
+    if (tracks.length === 0) return { failed: [] };
+
+    const results = await Promise.allSettled(
+      tracks.map((track) =>
+        this.spotifyAuthService.makeRequest(`/tracks/${track.platformId}`),
+      ),
+    );
+
+    const failed = results
+      .map((result, index) => {
+        if (result.status === 'rejected') {
+          if (result.reason.response?.status === 400) {
+            return tracks[index].platformId;
           }
           throw new BadGatewayException({
-            message: `Something went wrong while validating the songs from YouTube Music.`,
+            message:
+              'Something went wrong while validating the songs from Spotify.',
           });
         }
-      }
-    }
+        return null;
+      })
+      .filter((id): id is string => id !== null);
+
+    return { failed };
+  }
+
+  private async validateYoutubeTracks(
+    tracks: CreateTrackDto[],
+  ): Promise<{ failed: string[] }> {
+    if (tracks.length === 0) return { failed: [] };
+
+    const results = await Promise.allSettled(
+      tracks.map((track) =>
+        this.youtubeMusicAuthService.getTrack(track.platformId),
+      ),
+    );
+
+    const failed = results
+      .map((result, index) => {
+        if (result.status === 'rejected') {
+          if (result.reason.message?.includes('Invalid videoId')) {
+            return tracks[index].platformId;
+          }
+          throw new BadGatewayException({
+            message:
+              'Something went wrong while validating the songs from YouTube Music.',
+          });
+        }
+        return null;
+      })
+      .filter((id): id is string => id !== null);
+
+    return { failed };
   }
 }

@@ -8,4 +8,5 @@ export interface SpotifyTrack {
   album: SpotifyAlbum;
   tempo?: number;
   genres?: string[];
+  duration_ms: number;
 }

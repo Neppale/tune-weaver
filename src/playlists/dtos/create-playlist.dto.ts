@@ -32,6 +32,11 @@ export class CreatePlaylistDto {
   tracks: CreateTrackDto[];
 
   @IsOptional()
+  @IsArray({ each: true })
+  @IsUUID(4, { each: true })
+  existingTrackIds?: string[];
+
+  @IsOptional()
   @ValidateNested()
   @Type(() => CreateSourcePlaylistDto)
   sourcePlaylist?: CreateSourcePlaylistDto;

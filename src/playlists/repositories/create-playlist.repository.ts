@@ -8,30 +8,12 @@ export class CreatePlaylistRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreatePlaylistDto): Promise<Playlist> {
-    return this.prisma.playlist.create({
+    const playlist = await this.prisma.playlist.create({
       data: {
         name: data.name,
-        type: data.type,
-        value: data.value,
         user: {
           connect: { id: data.userId },
         },
-        ...(data.tracks && {
-          tracks: {
-            connectOrCreate: data.tracks.map((track) => ({
-              where: {
-                platform_platformId: {
-                  platform: track.platform,
-                  platformId: track.platformId,
-                },
-              },
-              create: {
-                platform: track.platform,
-                platformId: track.platformId,
-              },
-            })),
-          },
-        }),
         ...(data.sourcePlaylist && {
           sourcePlaylist: {
             connectOrCreate: {
@@ -54,5 +36,14 @@ export class CreatePlaylistRepository {
         sourcePlaylist: true,
       },
     });
+
+    await this.prisma.playlistTrack.createMany({
+      data: data.existingTrackIds.map((trackId) => ({
+        playlistId: playlist.id,
+        trackId,
+      })),
+    });
+
+    return playlist;
   }
 }

@@ -5,6 +5,7 @@ import { SpotifyAuthService } from '../../auth/services/spotify-auth.service';
 interface SpotifyTrackResponse {
   id: string;
   name: string;
+  duration_ms: number;
   artists: Array<{
     id: string;
     name: string;
@@ -46,6 +47,7 @@ export class GetSpotifyTrackDataByTrackIdService {
       const mappedTracks = tracks.tracks.map((track) => ({
         id: track.id,
         name: track.name,
+        duration_ms: track.duration_ms,
         artists: track.artists.map((artist) => ({
           id: artist.id,
           name: artist.name,
