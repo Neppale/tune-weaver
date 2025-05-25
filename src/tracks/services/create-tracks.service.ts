@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTrackDto } from '@Tracks/dtos/create-track.dto';
+import { CreateTrackParams } from '@Tracks/dtos/create-track.params';
 import { Track, TrackPlatform } from '@prisma/client';
 import { CreateTracksRepository } from '@Tracks/repositories/create-tracks.repository';
 
@@ -10,7 +10,7 @@ export class CreateTracksService {
   ) {}
 
   async create(
-    tracks: CreateTrackDto[],
+    tracks: CreateTrackParams[],
   ): Promise<{ newTracks: Track[]; newTrackPlatforms: TrackPlatform[] }> {
     const createdTracks = await this.createTracksRepository.create(tracks);
 

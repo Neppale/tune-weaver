@@ -3,11 +3,12 @@ import { CreatePlaylistRepository } from '../repositories/create-playlist.reposi
 import { CreatePlaylistDto } from '../dtos/create-playlist.dto';
 import { Playlist, Platform } from '@prisma/client';
 import { CreateTracksService } from '@Tracks/services/create-tracks.service';
-import { CreateTrackDto as TrackCreateTrackDto } from '@Tracks/dtos/create-track.dto';
+import { CreateTrackParams } from '@Tracks/dtos/create-track.params';
 import { LoadTrackPlatformByPlatformIdRepository } from '@Tracks/repositories/load-track-platform-by-platform-id.repository';
 import { FindTrackByMetadataRepository } from '@Tracks/repositories/find-tracks-by-metadata.repository';
 import { GetTrackDataByPlatformService } from '@Tracks/services/get-track-data-by-platform.service';
 import { CreateTrackPlatformRepository } from '@Tracks/repositories/create-track-platform.repository';
+import { CreateTrackDto } from '@Playlists/dtos/playlist.dto';
 
 interface TrackMatch {
   trackId: string;
@@ -31,10 +32,54 @@ export class CreatePlaylistService {
       return this.createPlaylistRepository.create(data);
     }
 
-    const existingTracks: TrackMatch[] = [];
-    const tracksToProcess: CreatePlaylistDto['tracks'] = [];
+    const existingTracks = await this.processExistingTracks(data.tracks);
+    const tracksToProcess = await this.getTracksToProcess(
+      data.tracks,
+      existingTracks,
+    );
 
-    const tracksByPlatform = data.tracks.reduce(
+    if (tracksToProcess.length) {
+      const processedTracks = await this.processNewTracks(tracksToProcess);
+      existingTracks.push(...processedTracks);
+    }
+
+    return this.createPlaylistRepository.create({
+      ...data,
+      existingTrackIds: existingTracks.map((track) => track.trackId),
+    });
+  }
+
+  private async processExistingTracks(
+    tracks: CreateTrackDto[],
+  ): Promise<TrackMatch[]> {
+    const existingTracks: TrackMatch[] = [];
+    const tracksByPlatform = this.groupTracksByPlatform(tracks);
+
+    const platformPromises = Object.entries(tracksByPlatform).map(
+      async ([platform, platformTracks]) => {
+        const platformIds = platformTracks.map((track) => track.platformId);
+        const existingPlatformTracks =
+          await this.loadTrackPlatformByPlatformIdRepository.load(
+            platform as Platform,
+            platformIds,
+          );
+
+        this.addExistingTracks(
+          existingTracks,
+          platformTracks,
+          existingPlatformTracks,
+        );
+      },
+    );
+
+    await Promise.all(platformPromises);
+    return existingTracks;
+  }
+
+  private groupTracksByPlatform(
+    tracks: CreatePlaylistDto['tracks'],
+  ): Record<Platform, CreatePlaylistDto['tracks']> {
+    return tracks.reduce(
       (acc, track) => {
         if (!acc[track.platform]) {
           acc[track.platform] = [];
@@ -44,91 +89,91 @@ export class CreatePlaylistService {
       },
       {} as Record<Platform, CreatePlaylistDto['tracks']>,
     );
+  }
 
-    const platformPromises = Object.entries(tracksByPlatform).map(
-      async ([platform, tracks]) => {
-        const platformIds = tracks.map((track) => track.platformId);
-        const existingPlatformTracks =
-          await this.loadTrackPlatformByPlatformIdRepository.load(
-            platform as Platform,
-            platformIds,
-          );
-
-        existingPlatformTracks.forEach((platformTrack) => {
-          const originalTrack = tracks.find(
-            (t) => t.platformId === platformTrack.platformId,
-          );
-          if (originalTrack) {
-            existingTracks.push({
-              trackId: platformTrack.track.id,
-              platform: originalTrack.platform,
-              platformId: originalTrack.platformId,
-            });
-          }
+  private addExistingTracks(
+    existingTracks: TrackMatch[],
+    platformTracks: CreatePlaylistDto['tracks'],
+    existingPlatformTracks: any[],
+  ): void {
+    existingPlatformTracks.forEach((platformTrack) => {
+      const originalTrack = platformTracks.find(
+        (t) => t.platformId === platformTrack.platformId,
+      );
+      if (originalTrack) {
+        existingTracks.push({
+          trackId: platformTrack.track.id,
+          platform: originalTrack.platform,
+          platformId: originalTrack.platformId,
         });
+      }
+    });
+  }
 
-        const existingIds = new Set(
-          existingPlatformTracks.map((t) => t.platformId),
-        );
-        tracksToProcess.push(
-          ...tracks.filter((track) => !existingIds.has(track.platformId)),
-        );
-      },
-    );
+  private async getTracksToProcess(
+    allTracks: CreatePlaylistDto['tracks'],
+    existingTracks: TrackMatch[],
+  ): Promise<CreatePlaylistDto['tracks']> {
+    const existingIds = new Set(existingTracks.map((t) => t.platformId));
+    return allTracks.filter((track) => !existingIds.has(track.platformId));
+  }
 
-    await Promise.all(platformPromises);
+  private async processNewTracks(
+    tracksToProcess: CreatePlaylistDto['tracks'],
+  ): Promise<TrackMatch[]> {
+    const tracksWithData = await this.getTracksData(tracksToProcess);
+    return this.processTracksWithData(tracksWithData);
+  }
 
-    if (tracksToProcess.length > 0) {
-      const trackDataPromises = tracksToProcess.map(async (track) => {
-        const trackData = await this.getTrackDataByPlatformService.get(
-          track.platform,
-          [track.platformId],
-        );
-        return {
+  private async getTracksData(
+    tracks: CreatePlaylistDto['tracks'],
+  ): Promise<CreateTrackParams[]> {
+    const trackDataPromises = tracks.map(async (track) => {
+      const trackData = await this.getTrackDataByPlatformService.get(
+        track.platform,
+        [track.platformId],
+      );
+      return {
+        platform: track.platform,
+        platformId: track.platformId,
+        name: trackData[0].name,
+        artist: trackData[0].artists[0].name,
+        album: trackData[0].album?.name,
+        duration: trackData[0].duration,
+      } as CreateTrackParams;
+    });
+
+    return Promise.all(trackDataPromises);
+  }
+
+  private async processTracksWithData(
+    tracks: CreateTrackParams[],
+  ): Promise<TrackMatch[]> {
+    const trackProcessingPromises = tracks.map(async (track) => {
+      const similarTrack = await this.findTrackByMetadataRepository.find(track);
+
+      if (similarTrack) {
+        await this.createTrackPlatformRepository.create({
+          trackId: similarTrack.id,
           platform: track.platform,
           platformId: track.platformId,
-          name: trackData[0].name,
-          artist: trackData[0].artists[0].name,
-          album: trackData[0].album?.name,
-          duration: trackData[0].duration,
-        } as TrackCreateTrackDto;
-      });
+        });
 
-      const tracksWithData = await Promise.all(trackDataPromises);
+        return {
+          trackId: similarTrack.id,
+          platform: track.platform,
+          platformId: track.platformId,
+        };
+      }
 
-      const trackProcessingPromises = tracksWithData.map(async (track) => {
-        const similarTrack =
-          await this.findTrackByMetadataRepository.find(track);
-
-        if (similarTrack) {
-          await this.createTrackPlatformRepository.create({
-            trackId: similarTrack.id,
-            platform: track.platform,
-            platformId: track.platformId,
-          });
-
-          return {
-            trackId: similarTrack.id,
-            platform: track.platform,
-            platformId: track.platformId,
-          };
-        } else {
-          const { newTracks } = await this.createTracksService.create([track]);
-          return {
-            trackId: newTracks[0].id,
-            platform: track.platform,
-            platformId: track.platformId,
-          };
-        }
-      });
-
-      const processedTracks = await Promise.all(trackProcessingPromises);
-      existingTracks.push(...processedTracks);
-    }
-
-    return this.createPlaylistRepository.create({
-      ...data,
-      existingTrackIds: existingTracks.map((track) => track.trackId),
+      const { newTracks } = await this.createTracksService.create([track]);
+      return {
+        trackId: newTracks[0].id,
+        platform: track.platform,
+        platformId: track.platformId,
+      };
     });
+
+    return Promise.all(trackProcessingPromises);
   }
 }

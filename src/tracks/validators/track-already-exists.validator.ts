@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Platform } from '@prisma/client';
-import { CreateTrackDto } from '@Tracks/dtos/create-track.dto';
+import { CreateTrackParams } from '@Tracks/dtos/create-track.params';
 import { LoadTrackPlatformByPlatformIdRepository } from '@Tracks/repositories/load-track-platform-by-platform-id.repository';
 
 interface ValidationResult {
@@ -9,7 +9,7 @@ interface ValidationResult {
     platform: Platform;
     platformId: string;
   }[];
-  tracksToValidate: CreateTrackDto[];
+  tracksToValidate: CreateTrackParams[];
 }
 
 @Injectable()
@@ -18,11 +18,13 @@ export class TrackAlreadyExistsValidator {
     private readonly loadTrackPlatformByPlatformIdRepository: LoadTrackPlatformByPlatformIdRepository,
   ) {}
 
-  async validate(tracks: CreateTrackDto[]): Promise<ValidationResult> {
+  async validate(tracks: CreateTrackParams[]): Promise<ValidationResult> {
     const existingTracks: ValidationResult['existingTracks'] = [];
-    const tracksToValidate: CreateTrackDto[] = [];
+    const tracksToValidate: CreateTrackParams[] = [];
 
-    const tracksByPlatform = tracks.reduce<Record<Platform, CreateTrackDto[]>>(
+    const tracksByPlatform = tracks.reduce<
+      Record<Platform, CreateTrackParams[]>
+    >(
       (acc, track) => {
         if (!acc[track.platform]) {
           acc[track.platform] = [];
@@ -30,7 +32,7 @@ export class TrackAlreadyExistsValidator {
         acc[track.platform].push(track);
         return acc;
       },
-      {} as Record<Platform, CreateTrackDto[]>,
+      {} as Record<Platform, CreateTrackParams[]>,
     );
 
     for (const [platform, platformTracks] of Object.entries(tracksByPlatform)) {

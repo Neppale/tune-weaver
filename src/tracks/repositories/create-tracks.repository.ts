@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@Prisma/prisma.service';
-import { CreateTrackDto } from '@Tracks/dtos/create-track.dto';
+import { CreateTrackParams } from '@Tracks/dtos/create-track.params';
 import { generateId } from '@Utils/id-generator.util';
 
 @Injectable()
 export class CreateTracksRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(tracks: CreateTrackDto[]) {
+  async create(tracks: CreateTrackParams[]) {
     return this.prisma.$transaction(
       tracks.map((track) =>
         this.prisma.track.create({

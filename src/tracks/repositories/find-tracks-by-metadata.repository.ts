@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateTrackDto } from '@Tracks/dtos/create-track.dto';
+import { CreateTrackParams } from '@Tracks/dtos/create-track.params';
 import { Track } from '@prisma/client';
 
 interface ScoredTrack {
@@ -12,7 +12,7 @@ interface ScoredTrack {
 export class FindTrackByMetadataRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async find(track: CreateTrackDto): Promise<Track | null> {
+  async find(track: CreateTrackParams): Promise<Track | null> {
     const potentialMatches = await this.prisma.track.findMany({
       where: {
         AND: [
