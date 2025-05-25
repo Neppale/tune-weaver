@@ -4,9 +4,9 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Platform } from '@prisma/client';
-import { SpotifyAuthService } from 'src/auth/services/spotify-auth.service';
-import { YoutubeMusicAuthService } from 'src/auth/services/youtube-music-auth.service';
-import { CreateTrackDto } from 'src/playlists/dtos/playlist.dto';
+import { SpotifyAuthService } from '@Auth/services/spotify-auth.service';
+import { YoutubeMusicAuthService } from '@Auth/services/youtube-music-auth.service';
+import { CreateTrackDto } from '@Playlists/dtos/playlist.dto';
 
 @Injectable()
 export class ValidatePlaylistTracksValidator {

@@ -3,7 +3,7 @@ import { Platform } from '@prisma/client';
 import { GetSpotifyTrackDataByTrackIdService } from './get-spotify-track-data-by-track-id.service';
 import { GetYouTubeMusicTrackDataByTrackIdService } from './get-youtube-music-track-data-by-track-id.service';
 import { TrackData } from '../interfaces/track-data.interface';
-import { PlatformNotSupportedException } from 'src/exceptions/auth.exception';
+import { PlatformNotSupportedException } from '@Exceptions/auth.exception';
 
 @Injectable()
 export class GetTrackDataByPlatformService {

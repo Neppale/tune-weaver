@@ -1,9 +1,9 @@
 import { ServiceUnavailableException, Injectable } from '@nestjs/common';
 import { Platform } from '@prisma/client';
-import { SpotifyAuthService } from '../../auth/services/spotify-auth.service';
-import { YoutubeMusicAuthService } from '../../auth/services/youtube-music-auth.service';
-import { SpotifyPlaylistResponse } from '../../interfaces/spotify/playlist.interface';
-import { PlatformNotSupportedException } from 'src/exceptions/auth.exception';
+import { SpotifyAuthService } from '@Auth/services/spotify-auth.service';
+import { YoutubeMusicAuthService } from '@Auth/services/youtube-music-auth.service';
+import { SpotifyPlaylistResponse } from '@Interfaces/spotify/playlist.interface';
+import { PlatformNotSupportedException } from '@Exceptions/auth.exception';
 
 @Injectable()
 export class GetTrackIdsByPlaylistIdService {

@@ -17,6 +17,16 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@Tracks/*": ["src/tracks/*"],
+      "@Playlists/*": ["src/playlists/*"],
+      "@Prisma/*": ["src/prisma/*"],
+      "@Utils/*": ["src/utils/*"],
+      "@Auth/*": ["src/auth/*"],
+      "@Exceptions/*": ["src/exceptions/*"],
+      "@Filters/*": ["src/filters/*"],
+      "@Interfaces/*": ["src/interfaces/*"]
+    }
   }
 }

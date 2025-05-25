@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Platform } from '@prisma/client';
-import { CreateTrackDto } from '../dtos/create-track.dto';
-import { LoadTrackPlatformByPlatformIdRepository } from '../repositories/load-track-platform-by-platform-id.repository';
+import { CreateTrackDto } from '@Tracks/dtos/create-track.dto';
+import { LoadTrackPlatformByPlatformIdRepository } from '@Tracks/repositories/load-track-platform-by-platform-id.repository';
 
 interface ValidationResult {
   existingTracks: {

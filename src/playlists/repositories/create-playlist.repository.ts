@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '@Prisma/prisma.service';
 import { Playlist } from '@prisma/client';
-import { CreatePlaylistDto } from 'src/playlists/dtos/create-playlist.dto';
+import { CreatePlaylistDto } from '@Playlists/dtos/create-playlist.dto';
 
 @Injectable()
 export class CreatePlaylistRepository {

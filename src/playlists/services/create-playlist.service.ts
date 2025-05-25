@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { CreatePlaylistRepository } from '../repositories/create-playlist.repository';
 import { CreatePlaylistDto } from '../dtos/create-playlist.dto';
 import { Playlist, Platform } from '@prisma/client';
-import { CreateTracksService } from '../../tracks/services/create-tracks.service';
-import { CreateTrackDto as TrackCreateTrackDto } from '../../tracks/dtos/create-track.dto';
-import { LoadTrackPlatformByPlatformIdRepository } from '../../tracks/repositories/load-track-platform-by-platform-id.repository';
-import { FindTrackByMetadataRepository } from '../../tracks/repositories/find-tracks-by-metadata.repository';
-import { GetTrackDataByPlatformService } from '../../tracks/services/get-track-data-by-platform.service';
-import { CreateTrackPlatformRepository } from '../../tracks/repositories/create-track-platform.repository';
+import { CreateTracksService } from '@Tracks/services/create-tracks.service';
+import { CreateTrackDto as TrackCreateTrackDto } from '@Tracks/dtos/create-track.dto';
+import { LoadTrackPlatformByPlatformIdRepository } from '@Tracks/repositories/load-track-platform-by-platform-id.repository';
+import { FindTrackByMetadataRepository } from '@Tracks/repositories/find-tracks-by-metadata.repository';
+import { GetTrackDataByPlatformService } from '@Tracks/services/get-track-data-by-platform.service';
+import { CreateTrackPlatformRepository } from '@Tracks/repositories/create-track-platform.repository';
 
 interface TrackMatch {
   trackId: string;
@@ -34,23 +34,49 @@ export class CreatePlaylistService {
     const existingTracks: TrackMatch[] = [];
     const tracksToProcess: CreatePlaylistDto['tracks'] = [];
 
-    for (const track of data.tracks) {
-      const existingPlatformTracks =
-        await this.loadTrackPlatformByPlatformIdRepository.load(
-          track.platform,
-          [track.platformId],
-        );
+    const tracksByPlatform = data.tracks.reduce(
+      (acc, track) => {
+        if (!acc[track.platform]) {
+          acc[track.platform] = [];
+        }
+        acc[track.platform].push(track);
+        return acc;
+      },
+      {} as Record<Platform, CreatePlaylistDto['tracks']>,
+    );
 
-      if (existingPlatformTracks.length > 0) {
-        existingTracks.push({
-          trackId: existingPlatformTracks[0].track.id,
-          platform: track.platform,
-          platformId: track.platformId,
+    const platformPromises = Object.entries(tracksByPlatform).map(
+      async ([platform, tracks]) => {
+        const platformIds = tracks.map((track) => track.platformId);
+        const existingPlatformTracks =
+          await this.loadTrackPlatformByPlatformIdRepository.load(
+            platform as Platform,
+            platformIds,
+          );
+
+        existingPlatformTracks.forEach((platformTrack) => {
+          const originalTrack = tracks.find(
+            (t) => t.platformId === platformTrack.platformId,
+          );
+          if (originalTrack) {
+            existingTracks.push({
+              trackId: platformTrack.track.id,
+              platform: originalTrack.platform,
+              platformId: originalTrack.platformId,
+            });
+          }
         });
-      } else {
-        tracksToProcess.push(track);
-      }
-    }
+
+        const existingIds = new Set(
+          existingPlatformTracks.map((t) => t.platformId),
+        );
+        tracksToProcess.push(
+          ...tracks.filter((track) => !existingIds.has(track.platformId)),
+        );
+      },
+    );
+
+    await Promise.all(platformPromises);
 
     if (tracksToProcess.length > 0) {
       const trackDataPromises = tracksToProcess.map(async (track) => {
@@ -75,7 +101,6 @@ export class CreatePlaylistService {
           await this.findTrackByMetadataRepository.find(track);
 
         if (similarTrack) {
-          // Create a new platform entry for the similar track
           await this.createTrackPlatformRepository.create({
             trackId: similarTrack.id,
             platform: track.platform,

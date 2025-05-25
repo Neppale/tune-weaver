@@ -1,4 +1,4 @@
-import { TrackData } from 'src/tracks/interfaces/track-data.interface';
+import { TrackData } from '@Tracks/interfaces/track-data.interface';
 
 export interface PlaylistOrganization {
   type: 'artist' | 'album' | 'genre' | 'bpm';

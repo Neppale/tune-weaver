@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { Platform } from '@prisma/client';
-import { AuthService } from 'src/auth/services/auth.service';
+import { AuthService } from '@Auth/services/auth.service';
 import { BaseException } from './base.exception';
 
 export class InvalidAuthCodeException extends BaseException {

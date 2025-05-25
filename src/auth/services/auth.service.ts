@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { Platform } from '@prisma/client';
-import { PlatformNotSupportedException } from '../../exceptions/auth.exception';
-import { YoutubeMusicAuthService } from 'src/auth/services/youtube-music-auth.service';
+import { PlatformNotSupportedException } from '@Exceptions/auth.exception';
+import { YoutubeMusicAuthService } from '@Auth/services/youtube-music-auth.service';
 
 export interface PlatformAuthConfig {
   clientId?: string;

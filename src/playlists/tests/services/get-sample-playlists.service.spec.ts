@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GetSamplePlaylistsService } from '../../services/get-sample-playlists.service';
-import { GetTrackIdsByPlaylistIdService } from '../../../tracks/services/get-track-ids-by-playlist-id.service';
-import { GetTrackDataByPlatformService } from '../../../tracks/services/get-track-data-by-platform.service';
-import { Platform } from '@prisma/client';
+import { GetTrackIdsByPlaylistIdService } from '@Tracks/services/get-track-ids-by-playlist-id.service';
+import { GetTrackDataByPlatformService } from '@Tracks/services/get-track-data-by-platform.service';
 import { mockTrackData } from '../mocks/track-data.mock';
+import { Platform } from '@prisma/client';
 
 describe('GetSamplePlaylistsService', () => {
   let service: GetSamplePlaylistsService;

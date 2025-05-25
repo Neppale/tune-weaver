@@ -1,6 +1,6 @@
 import { ServiceUnavailableException, Injectable } from '@nestjs/common';
-import { SpotifyTrack } from 'src/interfaces/spotify/track.interface';
-import { SpotifyAuthService } from '../../auth/services/spotify-auth.service';
+import { SpotifyTrack } from '@Interfaces/spotify/track.interface';
+import { SpotifyAuthService } from '@Auth/services/spotify-auth.service';
 
 interface SpotifyTrackResponse {
   id: string;

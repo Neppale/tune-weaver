@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateTrackDto } from '../dtos/create-track.dto';
+import { PrismaService } from '@Prisma/prisma.service';
+import { CreateTrackDto } from '@Tracks/dtos/create-track.dto';
 
 @Injectable()
 export class CreateTrackRepository {

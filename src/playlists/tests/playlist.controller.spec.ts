@@ -8,7 +8,7 @@ import {
 import { GetSamplePlaylistsService } from '../services/get-sample-playlists.service';
 import { Platform } from '@prisma/client';
 
-describe('CreatePlaylistController', () => {
+describe('PlaylistController', () => {
   let controller: PlaylistController;
   let createPlaylistService: jest.Mocked<CreatePlaylistService>;
   let getSamplePlaylistsService: jest.Mocked<GetSamplePlaylistsService>;
@@ -33,8 +33,12 @@ describe('CreatePlaylistController', () => {
     }).compile();
 
     controller = module.get<PlaylistController>(PlaylistController);
-    createPlaylistService = module.get(CreatePlaylistService);
-    getSamplePlaylistsService = module.get(GetSamplePlaylistsService);
+    createPlaylistService = module.get<jest.Mocked<CreatePlaylistService>>(
+      CreatePlaylistService,
+    );
+    getSamplePlaylistsService = module.get<
+      jest.Mocked<GetSamplePlaylistsService>
+    >(GetSamplePlaylistsService);
   });
 
   it('should call createPlaylistService.create once', async () => {
