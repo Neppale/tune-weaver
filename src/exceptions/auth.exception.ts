@@ -1,29 +1,40 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import { Platform } from '@prisma/client';
+import { AuthService } from 'src/auth/services/auth.service';
+import { BaseException } from './base.exception';
 
-export class AuthException extends HttpException {
-  constructor(message: string, platform?: Platform) {
-    const errorMessage = platform
-      ? `Authentication error for ${platform}: ${message}`
-      : `Authentication error: ${message}`;
-    super(errorMessage, HttpStatus.UNAUTHORIZED);
-  }
-}
-
-export class PlatformNotSupportedException extends AuthException {
-  constructor(platform: string) {
-    super(`Platform ${platform} is not supported`);
-  }
-}
-
-export class InvalidAuthCodeException extends AuthException {
+export class InvalidAuthCodeException extends BaseException {
   constructor(platform: Platform) {
-    super('No authorization code provided', platform);
+    super(
+      {
+        message: `Invalid authorization code for ${platform}`,
+        source: AuthService.name,
+      },
+      HttpStatus.BAD_REQUEST,
+    );
   }
 }
 
-export class InvalidRefreshTokenException extends AuthException {
+export class InvalidRefreshTokenException extends BaseException {
   constructor(platform: Platform) {
-    super('No refresh token provided', platform);
+    super(
+      {
+        message: `Invalid refresh token for ${platform}`,
+        source: AuthService.name,
+      },
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+}
+
+export class PlatformNotSupportedException extends BaseException {
+  constructor(platform: Platform) {
+    super(
+      {
+        message: `Platform ${platform} is not supported`,
+        source: AuthService.name,
+      },
+      HttpStatus.BAD_REQUEST,
+    );
   }
 }

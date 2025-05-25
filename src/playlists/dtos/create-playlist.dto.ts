@@ -26,7 +26,7 @@ export class CreatePlaylistDto {
   @IsUUID()
   userId: string;
 
-  @IsArray({ each: true })
+  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateTrackDto)
   tracks: CreateTrackDto[];

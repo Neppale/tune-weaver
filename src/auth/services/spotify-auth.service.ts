@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 
 @Injectable()
 export class SpotifyAuthService {
   private accessToken: string | null = null;
   private readonly baseUrl = 'https://api.spotify.com/v1';
+  private readonly logger = new Logger(SpotifyAuthService.name);
 
   constructor() {
     this.initializeClientCredentials();
@@ -29,7 +30,7 @@ export class SpotifyAuthService {
 
       this.accessToken = response.data.access_token;
     } catch (error) {
-      console.error('Failed to initialize client credentials:', error);
+      this.logger.error('Failed to initialize client credentials:', error);
       throw error;
     }
   }

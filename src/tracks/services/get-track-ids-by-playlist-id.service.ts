@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { ServiceUnavailableException, Injectable } from '@nestjs/common';
 import { Platform } from '@prisma/client';
 import { SpotifyAuthService } from '../../auth/services/spotify-auth.service';
 import { YoutubeMusicAuthService } from '../../auth/services/youtube-music-auth.service';
 import { SpotifyPlaylistResponse } from '../../interfaces/spotify/playlist.interface';
+import { PlatformNotSupportedException } from 'src/exceptions/auth.exception';
 
 @Injectable()
 export class GetTrackIdsByPlaylistIdService {
@@ -29,12 +30,13 @@ export class GetTrackIdsByPlaylistIdService {
           return youtubePlaylist.map((track) => track.videoId);
 
         default:
-          throw new Error(`Unsupported platform: ${platform}`);
+          throw new PlatformNotSupportedException(platform);
       }
     } catch (error) {
-      throw new Error(
-        `Failed to fetch track IDs from ${platform} playlist: ${error.message}`,
-      );
+      throw new ServiceUnavailableException({
+        message: `Failed to fetch track IDs from ${platform} playlist: ${error.message}`,
+        source: GetTrackIdsByPlaylistIdService.name,
+      });
     }
   }
 }

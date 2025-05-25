@@ -1,5 +1,5 @@
 import {
-  BadGatewayException,
+  ServiceUnavailableException,
   BadRequestException,
   Injectable,
 } from '@nestjs/common';
@@ -45,6 +45,7 @@ export class ValidatePlaylistTracksValidator {
     if (errors.length > 0) {
       throw new BadRequestException({
         message: errors.join('. '),
+        source: ValidatePlaylistTracksValidator.name,
       });
     }
   }
@@ -66,9 +67,10 @@ export class ValidatePlaylistTracksValidator {
           if (result.reason.response?.status === 400) {
             return tracks[index].platformId;
           }
-          throw new BadGatewayException({
+          throw new ServiceUnavailableException({
             message:
               'Something went wrong while validating the songs from Spotify.',
+            source: ValidatePlaylistTracksValidator.name,
           });
         }
         return null;
@@ -95,9 +97,10 @@ export class ValidatePlaylistTracksValidator {
           if (result.reason.message?.includes('Invalid videoId')) {
             return tracks[index].platformId;
           }
-          throw new BadGatewayException({
+          throw new ServiceUnavailableException({
             message:
               'Something went wrong while validating the songs from YouTube Music.',
+            source: ValidatePlaylistTracksValidator.name,
           });
         }
         return null;

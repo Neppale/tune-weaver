@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ServiceUnavailableException, Injectable } from '@nestjs/common';
 import { SpotifyTrack } from 'src/interfaces/spotify/track.interface';
 import { SpotifyAuthService } from '../../auth/services/spotify-auth.service';
 
@@ -69,7 +69,10 @@ export class GetSpotifyTrackDataByTrackIdService {
 
       return mappedTracks;
     } catch (error) {
-      throw new Error(`Failed to fetch track details: ${error.message}`);
+      throw new ServiceUnavailableException({
+        message: `Failed to fetch Spotify track details: ${error.message}`,
+        source: GetSpotifyTrackDataByTrackIdService.name,
+      });
     }
   }
 }

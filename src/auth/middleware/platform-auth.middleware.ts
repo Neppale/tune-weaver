@@ -1,4 +1,4 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { Platform } from '@prisma/client';
 import { SpotifyAuthService } from '../services/spotify-auth.service';
@@ -6,6 +6,8 @@ import { YoutubeMusicAuthService } from '../services/youtube-music-auth.service'
 
 @Injectable()
 export class PlatformAuthMiddleware implements NestMiddleware {
+  private readonly logger = new Logger(PlatformAuthMiddleware.name);
+
   constructor(
     private readonly spotifyAuthService: SpotifyAuthService,
     private readonly youtubeMusicAuthService: YoutubeMusicAuthService,
@@ -30,10 +32,12 @@ export class PlatformAuthMiddleware implements NestMiddleware {
         }
       }
     } catch (error) {
-      console.error(
+      this.logger.error(
         `Failed to authenticate with ${platform || 'all platforms'}:`,
         error,
       );
+
+      throw error;
     }
 
     next();

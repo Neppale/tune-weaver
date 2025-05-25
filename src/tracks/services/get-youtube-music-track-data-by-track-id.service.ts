@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ServiceUnavailableException, Injectable } from '@nestjs/common';
 import { YoutubeMusicAuthService } from '../../auth/services/youtube-music-auth.service';
 
 interface YouTubeMusicTrackResponse {
@@ -47,9 +47,10 @@ export class GetYouTubeMusicTrackDataByTrackIdService {
         duration: track.duration,
       }));
     } catch (error) {
-      throw new Error(
-        `Failed to fetch YouTube Music track details: ${error.message}`,
-      );
+      throw new ServiceUnavailableException({
+        message: `Failed to fetch YouTube Music track details: ${error.message}`,
+        source: GetYouTubeMusicTrackDataByTrackIdService.name,
+      });
     }
   }
 }
