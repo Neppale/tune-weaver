@@ -12,11 +12,6 @@ export class CreateTrackDto {
   platformId: string;
 }
 
-export class CreateSourcePlaylistDto {
-  platform: Platform;
-  platformId: string;
-}
-
 export class UpdatePlaylistDto {
   name?: string;
   type?: string;

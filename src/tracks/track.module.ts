@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrismaService } from '@Prisma/prisma.service';
 import { CreateTracksService } from './services/create-tracks.service';
-import { CreateTrackRepository } from './repositories/create-track.repository';
+import { CreateTracksRepository } from './repositories/create-tracks.repository';
 import { LoadTrackPlatformByPlatformIdRepository } from './repositories/load-track-platform-by-platform-id.repository';
 import { FindTrackByMetadataRepository } from './repositories/find-tracks-by-metadata.repository';
 import { GetSpotifyTrackDataByTrackIdService } from './services/get-spotify-track-data-by-track-id.service';
@@ -16,7 +16,7 @@ import { GetTrackIdsByPlaylistIdService } from './services/get-track-ids-by-play
   providers: [
     PrismaService,
     CreateTracksService,
-    CreateTrackRepository,
+    CreateTracksRepository,
     LoadTrackPlatformByPlatformIdRepository,
     FindTrackByMetadataRepository,
     GetSpotifyTrackDataByTrackIdService,

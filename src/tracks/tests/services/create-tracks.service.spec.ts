@@ -1,27 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateTracksService } from '../../services/create-tracks.service';
-import { CreateTrackRepository } from '../../repositories/create-track.repository';
+import { CreateTracksRepository } from '../../repositories/create-tracks.repository';
 import { Platform } from '@prisma/client';
 
 describe('CreateTracksService', () => {
   let service: CreateTracksService;
-  let createTrackRepository: jest.Mocked<CreateTrackRepository>;
+  let createTrackRepository: jest.Mocked<CreateTracksRepository>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CreateTracksService,
         {
-          provide: CreateTrackRepository,
+          provide: CreateTracksRepository,
           useValue: {
-            createMany: jest.fn(),
+            create: jest.fn(),
           },
         },
       ],
     }).compile();
 
     service = module.get<CreateTracksService>(CreateTracksService);
-    createTrackRepository = module.get(CreateTrackRepository);
+    createTrackRepository = module.get(CreateTracksRepository);
   });
 
   it('should call createTrackRepository once', async () => {
@@ -36,7 +36,7 @@ describe('CreateTracksService', () => {
       },
     ];
 
-    createTrackRepository.createMany.mockResolvedValue([
+    createTrackRepository.create.mockResolvedValue([
       {
         id: 'track1',
         name: 'Test Track',
@@ -60,6 +60,6 @@ describe('CreateTracksService', () => {
 
     await service.create(mockTracks);
 
-    expect(createTrackRepository.createMany).toHaveBeenCalledTimes(1);
+    expect(createTrackRepository.create).toHaveBeenCalledTimes(1);
   });
 });

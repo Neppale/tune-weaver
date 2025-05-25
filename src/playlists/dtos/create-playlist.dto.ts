@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { CreateSourcePlaylistDto, CreateTrackDto } from './playlist.dto';
+import { CreateTrackDto } from './playlist.dto';
 import {
   IsString,
   IsArray,
@@ -35,9 +35,4 @@ export class CreatePlaylistDto {
   @IsArray({ each: true })
   @IsUUID(4, { each: true })
   existingTrackIds?: string[];
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => CreateSourcePlaylistDto)
-  sourcePlaylist?: CreateSourcePlaylistDto;
 }

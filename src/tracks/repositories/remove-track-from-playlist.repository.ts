@@ -18,7 +18,6 @@ export class RemoveTrackFromPlaylistRepository {
       },
       include: {
         tracks: true,
-        sourcePlaylist: true,
       },
     });
   }

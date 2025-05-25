@@ -18,6 +18,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "moduleResolution": "node",
     "paths": {
       "@Tracks/*": ["src/tracks/*"],
       "@Playlists/*": ["src/playlists/*"],
