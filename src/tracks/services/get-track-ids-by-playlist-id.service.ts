@@ -1,4 +1,4 @@
-import { ServiceUnavailableException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Platform } from '@prisma/client';
 import { SpotifyAuthService } from '@Auth/services/spotify-auth.service';
 import { YoutubeMusicAuthService } from '@Auth/services/youtube-music-auth.service';
@@ -13,30 +13,23 @@ export class GetTrackIdsByPlaylistIdService {
   ) {}
 
   async get(platform: Platform, playlistId: string): Promise<string[]> {
-    try {
-      switch (platform) {
-        case Platform.SPOTIFY:
-          const spotifyPlaylist =
-            await this.spotifyAuthService.makeRequest<SpotifyPlaylistResponse>(
-              `/playlists/${playlistId}`,
-            );
-          return spotifyPlaylist.tracks.items
-            .filter((item) => item.track !== null)
-            .map((item) => item.track!.id);
+    switch (platform) {
+      case Platform.SPOTIFY:
+        const spotifyPlaylist =
+          await this.spotifyAuthService.makeRequest<SpotifyPlaylistResponse>(
+            `/playlists/${playlistId}`,
+          );
+        return spotifyPlaylist.tracks.items
+          .filter((item) => item.track !== null)
+          .map((item) => item.track!.id);
 
-        case Platform.YOUTUBE_MUSIC:
-          const youtubePlaylist =
-            await this.youtubeMusicAuthService.getPlaylist(playlistId);
-          return youtubePlaylist.map((track) => track.videoId);
+      case Platform.YOUTUBE_MUSIC:
+        const youtubePlaylist =
+          await this.youtubeMusicAuthService.getPlaylist(playlistId);
+        return youtubePlaylist.map((track) => track.videoId);
 
-        default:
-          throw new PlatformNotSupportedException(platform);
-      }
-    } catch (error) {
-      throw new ServiceUnavailableException({
-        message: `Failed to fetch track IDs from ${platform} playlist: ${error.message}`,
-        source: GetTrackIdsByPlaylistIdService.name,
-      });
+      default:
+        throw new PlatformNotSupportedException(platform);
     }
   }
 }
