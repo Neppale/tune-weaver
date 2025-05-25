@@ -96,7 +96,7 @@ export class CreatePlaylistService {
 
       const tracksWithData = await Promise.all(trackDataPromises);
 
-      for (const track of tracksWithData) {
+      const trackProcessingPromises = tracksWithData.map(async (track) => {
         const similarTrack =
           await this.findTrackByMetadataRepository.find(track);
 
@@ -107,20 +107,23 @@ export class CreatePlaylistService {
             platformId: track.platformId,
           });
 
-          existingTracks.push({
+          return {
             trackId: similarTrack.id,
             platform: track.platform,
             platformId: track.platformId,
-          });
+          };
         } else {
           const { newTracks } = await this.createTracksService.create([track]);
-          existingTracks.push({
+          return {
             trackId: newTracks[0].id,
             platform: track.platform,
             platformId: track.platformId,
-          });
+          };
         }
-      }
+      });
+
+      const processedTracks = await Promise.all(trackProcessingPromises);
+      existingTracks.push(...processedTracks);
     }
 
     return this.createPlaylistRepository.create({
