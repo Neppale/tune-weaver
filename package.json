@@ -86,6 +86,7 @@
       ".*\\.module\\.ts$",
       ".*\\.repository\\.ts$",
       ".*\\.dto\\.ts$",
+      ".*\\.params\\.ts$",
       ".*\\.interface\\.ts$",
       ".*\\.mock\\.ts$",
       "main\\.ts$",
