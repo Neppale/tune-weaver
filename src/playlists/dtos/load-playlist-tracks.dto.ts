@@ -7,9 +7,9 @@ export class LoadPlaylistTracksDto {
 
   @IsNumber()
   @IsOptional()
-  page?: number;
+  page?: number = 1;
 
   @IsNumber()
   @IsOptional()
-  size?: number;
+  size?: number = 100;
 }

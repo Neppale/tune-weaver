@@ -6,9 +6,6 @@ import { LoadPlaylistTracksResult } from '@Playlists/models/load-playlist-tracks
 
 @Injectable()
 export class LoadPlaylistTracksService {
-  private readonly DEFAULT_PAGE = 1;
-  private readonly DEFAULT_PAGE_SIZE = 100;
-
   constructor(
     private readonly loadPlaylistTracksRepository: LoadPlaylistTracksRepository,
     private readonly loadPlaylistDataByIdService: LoadPlaylistDataByIdService,
@@ -16,11 +13,7 @@ export class LoadPlaylistTracksService {
 
   async load(
     playlistId: string,
-    {
-      search,
-      page = this.DEFAULT_PAGE,
-      size = this.DEFAULT_PAGE_SIZE,
-    }: LoadPlaylistTracksDto,
+    { search, page, size }: LoadPlaylistTracksDto,
   ): Promise<LoadPlaylistTracksResult> {
     await this.loadPlaylistDataByIdService.load(playlistId);
 

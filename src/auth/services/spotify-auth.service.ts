@@ -78,9 +78,17 @@ export class SpotifyAuthService {
       return response.data;
     } catch (error) {
       if (error.response?.status === 401) {
+        this.logger.warn('Unauthorized, refreshing access token...');
         await this.initializeClientCredentials();
         return this.makeRequest(endpoint, options);
       }
+
+      if (error.response?.status === 429) {
+        this.logger.warn('Rate limit exceeded, retrying...');
+        await this.initializeClientCredentials();
+        return this.makeRequest(endpoint, options);
+      }
+
       throw error;
     }
   }

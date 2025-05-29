@@ -12,9 +12,13 @@ import { CreateTracksService } from '@Tracks/services/create-tracks.service';
 import { CreateTracksRepository } from '@Tracks/repositories/create-tracks.repository';
 import { LoadTrackPlatformByPlatformIdRepository } from '@Tracks/repositories/load-track-platform-by-platform-id.repository';
 import { LoadTrackByIdRepository } from './repositories/load-track-by-id.repository';
+import { TrackController } from './track.controller';
+import { SearchTracksService } from './services/search-tracks.service';
+import { SearchTracksRepository } from './repositories/search-tracks.repository';
 
 @Module({
   imports: [PrismaModule, AuthModule],
+  controllers: [TrackController],
   providers: [
     FindTrackByMetadataRepository,
     CreateTrackPlatformRepository,
@@ -27,6 +31,8 @@ import { LoadTrackByIdRepository } from './repositories/load-track-by-id.reposit
     CreateTracksRepository,
     LoadTrackPlatformByPlatformIdRepository,
     LoadTrackByIdRepository,
+    SearchTracksService,
+    SearchTracksRepository,
   ],
   exports: [
     FindTrackByMetadataRepository,
@@ -40,6 +46,8 @@ import { LoadTrackByIdRepository } from './repositories/load-track-by-id.reposit
     CreateTracksRepository,
     LoadTrackPlatformByPlatformIdRepository,
     LoadTrackByIdRepository,
+    SearchTracksService,
+    SearchTracksRepository,
   ],
 })
 export class TrackModule {}
