@@ -7,6 +7,7 @@ export class YoutubeMusicAuthService {
 
   constructor() {
     this.ytmusic = new YTMusic();
+    this.initialize();
   }
 
   async initialize() {

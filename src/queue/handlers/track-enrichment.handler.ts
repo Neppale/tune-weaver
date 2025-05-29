@@ -1,16 +1,15 @@
 import { Controller, Logger } from '@nestjs/common';
-import { EventPattern } from '@nestjs/microservices';
+import { EventPattern, Transport } from '@nestjs/microservices';
+import { Platform } from '@prisma/client';
 import { GetTrackDataByPlatformService } from '@Tracks/services/get-track-data-by-platform.service';
 import { FindTrackByMetadataRepository } from '@Tracks/repositories/find-tracks-by-metadata.repository';
 import { CreateTrackPlatformRepository } from '@Tracks/repositories/create-track-platform.repository';
 import { UpdateTrackRepository } from '@Tracks/repositories/update-track.repository';
 import { FindTrackByIdRepository } from '@Tracks/repositories/find-track-by-id.repository';
-import { Platform } from '@prisma/client';
 
 @Controller()
-export class TrackEnrichmentConsumer {
-  private readonly logger = new Logger(TrackEnrichmentConsumer.name);
-
+export class TrackEnrichmentHandler {
+  private readonly logger = new Logger(TrackEnrichmentHandler.name);
   constructor(
     private readonly getTrackDataByPlatformService: GetTrackDataByPlatformService,
     private readonly findTrackByMetadataRepository: FindTrackByMetadataRepository,
@@ -19,29 +18,30 @@ export class TrackEnrichmentConsumer {
     private readonly findTrackByIdRepository: FindTrackByIdRepository,
   ) {}
 
-  @EventPattern('track.enrichment')
-  async handleTrackEnrichment(data: { trackId: string; platform: Platform }) {
-    this.logger.log(`Starting track enrichment for trackId: ${data.trackId}`);
+  @EventPattern('track.enrichment', Transport.RMQ)
+  async handle(data: { trackId: string; platform: Platform }) {
+    this.logger.log('Received track enrichment message:', JSON.stringify(data));
 
     try {
       const track = await this.findTrackByIdRepository.find(
         data.trackId,
         data.platform,
       );
-
       if (!track) {
-        this.logger.warn(`Track not found for trackId: ${data.trackId}`);
+        this.logger.log('Track not found:', data.trackId);
         return;
       }
 
       if (track.isEnriched) {
-        this.logger.log(`Track ${data.trackId} is already enriched`);
+        this.logger.log(
+          `Track ${data.trackId} is already enriched for platform: ${data.platform}`,
+        );
         return;
       }
 
       const platformTrack = track.platforms[0];
       this.logger.log(
-        `Fetching track data for platform: ${platformTrack.platform}, platformId: ${platformTrack.platformId}`,
+        `Processing track enrichment for platform: ${platformTrack.platform}, platformId: ${platformTrack.platformId}`,
       );
 
       const trackData = await this.getTrackDataByPlatformService.get(
@@ -50,8 +50,8 @@ export class TrackEnrichmentConsumer {
       );
 
       if (!trackData || trackData.length === 0) {
-        this.logger.warn(
-          `No track data returned for platformId: ${platformTrack.platformId}`,
+        this.logger.log(
+          `No track data returned for platformId: ${platformTrack.platformId}, platform: ${platformTrack.platform}`,
         );
         return;
       }
@@ -62,6 +62,7 @@ export class TrackEnrichmentConsumer {
           artist: trackData[0].artists[0].name,
           album: trackData[0].album?.name,
           duration: trackData[0].duration,
+          platform: platformTrack.platform,
         })}`,
       );
 
@@ -76,7 +77,7 @@ export class TrackEnrichmentConsumer {
 
       if (similarTrack) {
         this.logger.log(
-          `Found similar track with id: ${similarTrack.id}, creating platform link`,
+          `Found similar track with id: ${similarTrack.id}, creating platform link for platform: ${platformTrack.platform}`,
         );
         await this.createTrackPlatformRepository.create({
           trackId: similarTrack.id,
@@ -86,7 +87,7 @@ export class TrackEnrichmentConsumer {
         });
       } else {
         this.logger.log(
-          `No similar track found, updating track ${track.id} with enriched data`,
+          `No similar track found, updating track ${track.id} with enriched data for platform: ${platformTrack.platform}`,
         );
         await this.updateTrackRepository.update(track.id, {
           name: trackData[0].name,
@@ -98,14 +99,10 @@ export class TrackEnrichmentConsumer {
       }
 
       this.logger.log(
-        `Successfully completed track enrichment for trackId: ${data.trackId}`,
+        `Successfully completed track enrichment for trackId: ${data.trackId}, platform: ${data.platform}`,
       );
     } catch (error) {
-      this.logger.error(
-        `Error processing track enrichment for trackId ${data.trackId}:`,
-        error.stack,
-      );
-      this.logger.error('Error details:', error);
+      this.logger.error('Error handling track enrichment:', error);
       throw error;
     }
   }

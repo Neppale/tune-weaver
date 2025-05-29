@@ -1,33 +1,20 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import {
-  ClientProxy,
-  ClientProxyFactory,
-  Transport,
-} from '@nestjs/microservices';
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { Platform } from '@prisma/client';
 
 @Injectable()
-export class QueueService implements OnModuleInit {
-  private client: ClientProxy;
+export class QueueService {
+  private readonly logger = new Logger(QueueService.name);
 
-  constructor() {
-    this.client = ClientProxyFactory.create({
-      transport: Transport.RMQ,
-      options: {
-        urls: [process.env.RABBITMQ_URL],
-        queue: 'track_enrichment',
-        queueOptions: {
-          durable: true,
-        },
-      },
-    });
-  }
-
-  async onModuleInit() {
-    await this.client.connect();
-  }
+  constructor(
+    @Inject('TRACK_ENRICHMENT') private readonly client: ClientProxy,
+  ) {}
 
   async publishTrackEnrichment(trackId: string, platform: Platform) {
+    this.logger.log(
+      `Publishing track enrichment for trackId: ${trackId}, platform: ${platform}`,
+    );
+
     return this.client.emit('track.enrichment', { trackId, platform });
   }
 }

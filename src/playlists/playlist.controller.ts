@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
 import { GetSamplePlaylistsService } from './services/get-sample-playlists.service';
 import { CreatePlaylistDto } from './dtos/create-playlist.dto';
 import { CreatePlaylistService } from './services/create-playlist.service';
-import { Platform } from '@prisma/client';
+import { Platform, Playlist } from '@prisma/client';
 import { PlaylistOrganization } from '../interfaces/spotify/playlist-organization.interface';
 
 @Controller('playlist')
@@ -21,7 +21,7 @@ export class PlaylistController {
   }
 
   @Post('create')
-  async create(@Body() body: CreatePlaylistDto) {
+  async create(@Body() body: CreatePlaylistDto): Promise<Playlist> {
     return this.createPlaylistService.create(body);
   }
 }
