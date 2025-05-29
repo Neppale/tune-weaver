@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Query,
+  Patch,
+} from '@nestjs/common';
 import { GetSamplePlaylistsService } from './services/get-sample-playlists.service';
 import { CreatePlaylistDto } from './dtos/create-playlist.dto';
 import { CreatePlaylistService } from './services/create-playlist.service';
@@ -10,6 +18,8 @@ import { LoadPlaylistTracksResult } from './models/load-playlist-tracks.result';
 import { LoadPlaylistTracksDto } from '@Playlists/dtos/load-playlist-tracks.dto';
 import { ImportPlaylistService } from './services/import-playlist.service';
 import { ImportPlaylistDto } from './dtos/import-playlist.dto';
+import { AddTracksToPlaylistService } from './services/add-tracks-to-playlist.service';
+import { AddTracksToPlaylistDto } from './dtos/add-tracks-to-playlist.dto';
 
 @Controller('playlist')
 export class PlaylistController {
@@ -19,6 +29,7 @@ export class PlaylistController {
     private readonly loadPlaylistDataService: LoadPlaylistDataService,
     private readonly loadPlaylistTracksService: LoadPlaylistTracksService,
     private readonly importPlaylistService: ImportPlaylistService,
+    private readonly addTracksToPlaylistService: AddTracksToPlaylistService,
   ) {}
 
   @Get('sample/:playlistId')
@@ -50,5 +61,13 @@ export class PlaylistController {
   @Post('import')
   async import(@Body() data: ImportPlaylistDto): Promise<Playlist> {
     return this.importPlaylistService.import(data);
+  }
+
+  @Patch(':id')
+  addTracks(
+    @Param('id') id: string,
+    @Body() addTracksDto: AddTracksToPlaylistDto,
+  ): Promise<void> {
+    return this.addTracksToPlaylistService.addTracks(id, addTracksDto);
   }
 }

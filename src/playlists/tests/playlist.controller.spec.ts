@@ -11,6 +11,7 @@ import { QueueService } from '@Queue/services/queue.service';
 import { LoadPlaylistTracksService } from '@Playlists/services/load-playlist-tracks.service';
 import { LoadPlaylistDataService } from '@Playlists/services/load-playlist-data.service';
 import { ImportPlaylistService } from '@Playlists/services/import-playlist.service';
+import { AddTracksToPlaylistService } from '@Playlists/services/add-tracks-to-playlist.service';
 
 describe('PlaylistController', () => {
   let controller: PlaylistController;
@@ -19,6 +20,7 @@ describe('PlaylistController', () => {
   let loadPlaylistDataService: jest.Mocked<LoadPlaylistDataService>;
   let loadPlaylistTracksService: jest.Mocked<LoadPlaylistTracksService>;
   let importPlaylistService: jest.Mocked<ImportPlaylistService>;
+  let addTracksToPlaylistService: jest.Mocked<AddTracksToPlaylistService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -60,6 +62,12 @@ describe('PlaylistController', () => {
             import: jest.fn(),
           },
         },
+        {
+          provide: AddTracksToPlaylistService,
+          useValue: {
+            addTracks: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -79,6 +87,9 @@ describe('PlaylistController', () => {
     importPlaylistService = module.get<jest.Mocked<ImportPlaylistService>>(
       ImportPlaylistService,
     );
+    addTracksToPlaylistService = module.get<
+      jest.Mocked<AddTracksToPlaylistService>
+    >(AddTracksToPlaylistService);
   });
 
   it('should call createPlaylistService.create once', async () => {
@@ -128,5 +139,20 @@ describe('PlaylistController', () => {
     });
 
     expect(importPlaylistService.import).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call addTracksToPlaylistService.add once', async () => {
+    addTracksToPlaylistService.addTracks.mockResolvedValue(undefined);
+
+    await controller.addTracks('123', {
+      tracks: [
+        {
+          platform: Platform.SPOTIFY,
+          platformId: '123',
+        },
+      ],
+    });
+
+    expect(addTracksToPlaylistService.addTracks).toHaveBeenCalledTimes(1);
   });
 });
