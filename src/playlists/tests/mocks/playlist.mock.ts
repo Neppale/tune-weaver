@@ -1,4 +1,3 @@
-import { Platform } from '@prisma/client';
 import { CreatePlaylistDto } from '../../dtos/create-playlist.dto';
 
 export const mockDate = new Date('2024-01-01');
@@ -6,20 +5,13 @@ export const mockDate = new Date('2024-01-01');
 export const mockPlaylistData: CreatePlaylistDto = {
   name: 'Test Playlist',
   userId: 'user1',
-  type: 'CUSTOM',
-  tracks: [
-    {
-      platform: Platform.SPOTIFY,
-      platformId: 'track1',
-    },
-  ],
+  sourcePlaylistId: 'sourcePlaylistId',
 };
 
 export const mockEmptyPlaylistData: CreatePlaylistDto = {
   name: 'Test Playlist',
   userId: 'user1',
-  type: 'CUSTOM',
-  tracks: [],
+  sourcePlaylistId: 'sourcePlaylistId',
 };
 
 export const mockPlaylistResponse = {

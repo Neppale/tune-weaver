@@ -11,7 +11,7 @@ import { GetTrackIdsByPlaylistIdService } from '@Tracks/services/get-track-ids-b
 import { CreateTracksService } from '@Tracks/services/create-tracks.service';
 import { CreateTracksRepository } from '@Tracks/repositories/create-tracks.repository';
 import { LoadTrackPlatformByPlatformIdRepository } from '@Tracks/repositories/load-track-platform-by-platform-id.repository';
-import { FindTrackByIdRepository } from './repositories/find-track-by-id.repository';
+import { LoadTrackByIdRepository } from './repositories/load-track-by-id.repository';
 
 @Module({
   imports: [PrismaModule, AuthModule],
@@ -26,7 +26,7 @@ import { FindTrackByIdRepository } from './repositories/find-track-by-id.reposit
     CreateTracksService,
     CreateTracksRepository,
     LoadTrackPlatformByPlatformIdRepository,
-    FindTrackByIdRepository,
+    LoadTrackByIdRepository,
   ],
   exports: [
     FindTrackByMetadataRepository,
@@ -39,7 +39,7 @@ import { FindTrackByIdRepository } from './repositories/find-track-by-id.reposit
     CreateTracksService,
     CreateTracksRepository,
     LoadTrackPlatformByPlatformIdRepository,
-    FindTrackByIdRepository,
+    LoadTrackByIdRepository,
   ],
 })
 export class TrackModule {}

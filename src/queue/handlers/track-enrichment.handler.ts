@@ -5,7 +5,7 @@ import { GetTrackDataByPlatformService } from '@Tracks/services/get-track-data-b
 import { FindTrackByMetadataRepository } from '@Tracks/repositories/find-tracks-by-metadata.repository';
 import { CreateTrackPlatformRepository } from '@Tracks/repositories/create-track-platform.repository';
 import { UpdateTrackRepository } from '@Tracks/repositories/update-track.repository';
-import { FindTrackByIdRepository } from '@Tracks/repositories/find-track-by-id.repository';
+import { LoadTrackByIdRepository } from '@Tracks/repositories/load-track-by-id.repository';
 
 @Controller()
 export class TrackEnrichmentHandler {
@@ -15,7 +15,7 @@ export class TrackEnrichmentHandler {
     private readonly findTrackByMetadataRepository: FindTrackByMetadataRepository,
     private readonly createTrackPlatformRepository: CreateTrackPlatformRepository,
     private readonly updateTrackRepository: UpdateTrackRepository,
-    private readonly findTrackByIdRepository: FindTrackByIdRepository,
+    private readonly loadTrackByIdRepository: LoadTrackByIdRepository,
   ) {}
 
   @EventPattern('track.enrichment', Transport.RMQ)
@@ -23,7 +23,7 @@ export class TrackEnrichmentHandler {
     this.logger.log('Received track enrichment message:', JSON.stringify(data));
 
     try {
-      const track = await this.findTrackByIdRepository.find(
+      const track = await this.loadTrackByIdRepository.load(
         data.trackId,
         data.platform,
       );

@@ -5,8 +5,8 @@ import { FetchYoutubeMusicPlaylistService } from './youtube-music/fetch-youtube-
 import { FetchSpotifyPlaylistService } from './spotify/fetch-spotify-playlist.service';
 import { CreatePlaylistService } from './create-playlist.service';
 import { CreatePlaylistDto } from '../dtos/create-playlist.dto';
-import { PlatformNotSupportedException } from '@Exceptions/auth.exception';
 import { ImportedPlaylist } from '../models/imported-playlist.model';
+import { PlatformNotSupportedException } from '@Exceptions/auth.exception';
 
 @Injectable()
 export class ImportPlaylistService {
@@ -19,46 +19,31 @@ export class ImportPlaylistService {
   ) {}
 
   async import(data: ImportPlaylistDto) {
-    try {
-      const playlist = await this.fetchPlaylist(data.platform, data.platformId);
-      const createPlaylistDto = this.mapToCreatePlaylistDto(data, playlist);
+    this.logger.log(
+      `Importing playlist from ${data.platform} with id ${data.platformId} for user ${data.userId}`,
+    );
 
-      return this.createPlaylistService.create(createPlaylistDto);
-    } catch (error) {
-      this.logger.error(
-        `Failed to import playlist from ${data.platform}: ${error.message}`,
-        error.stack,
-      );
-      throw error;
-    }
-  }
-
-  private async fetchPlaylist(
-    platform: Platform,
-    platformId: string,
-  ): Promise<ImportedPlaylist> {
-    switch (platform) {
+    let playlist: ImportedPlaylist;
+    switch (data.platform) {
       case Platform.YOUTUBE_MUSIC:
-        return this.fetchYoutubeMusicPlaylistService.fetch(platformId);
+        playlist = await this.fetchYoutubeMusicPlaylistService.fetch(
+          data.platformId,
+        );
+        break;
       case Platform.SPOTIFY:
-        return this.fetchSpotifyPlaylistService.fetch(platformId);
+        playlist = await this.fetchSpotifyPlaylistService.fetch(
+          data.platformId,
+        );
+        break;
       default:
-        throw new PlatformNotSupportedException(platform);
+        throw new PlatformNotSupportedException(data.platform);
     }
-  }
-
-  private mapToCreatePlaylistDto(
-    data: ImportPlaylistDto,
-    playlist: ImportedPlaylist,
-  ): CreatePlaylistDto {
-    return {
+    const createPlaylistDto: CreatePlaylistDto = {
       name: playlist.name,
-      type: 'IMPORTED',
       userId: data.userId,
-      tracks: playlist.trackIds.map((trackId) => ({
-        platform: data.platform,
-        platformId: trackId,
-      })),
+      sourcePlaylistId: data.platformId,
     };
+
+    return this.createPlaylistService.create(createPlaylistDto);
   }
 }

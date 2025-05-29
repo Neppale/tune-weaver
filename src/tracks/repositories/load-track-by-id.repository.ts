@@ -3,10 +3,10 @@ import { PrismaService } from '@Prisma/prisma.service';
 import { Track, Platform, TrackPlatform } from '@prisma/client';
 
 @Injectable()
-export class FindTrackByIdRepository {
+export class LoadTrackByIdRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async find(
+  async load(
     id: string,
     platform: Platform,
   ): Promise<Track & { platforms: TrackPlatform[] }> {

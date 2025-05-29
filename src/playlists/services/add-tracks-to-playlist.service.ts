@@ -1,16 +1,20 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Platform } from '@prisma/client';
 import { AddTracksToPlaylistRepository } from '../repositories/add-tracks-to-playlist.repository';
 import { CreateTracksService } from '@Tracks/services/create-tracks.service';
 import { QueueService } from '@Queue/services/queue.service';
 import { AddTracksToPlaylistDto } from '../dtos/add-tracks-to-playlist.dto';
+import { LoadPlaylistDataRepository } from '../repositories/load-playlist-data.repository';
+import { LoadTrackByIdRepository } from '@Tracks/repositories/load-track-by-id.repository';
 
 @Injectable()
 export class AddTracksToPlaylistService {
   private readonly logger = new Logger(AddTracksToPlaylistService.name);
 
   constructor(
+    private readonly loadPlaylistDataRepository: LoadPlaylistDataRepository,
     private readonly addTracksToPlaylistRepository: AddTracksToPlaylistRepository,
+    private readonly loadTrackByIdRepository: LoadTrackByIdRepository,
     private readonly createTracksService: CreateTracksService,
     private readonly queueService: QueueService,
   ) {}
@@ -20,6 +24,18 @@ export class AddTracksToPlaylistService {
     dto: AddTracksToPlaylistDto,
   ): Promise<void> {
     try {
+      this.logger.log(
+        `Adding ${dto.tracks.length} tracks to playlist ${playlistId}`,
+      );
+
+      const playlist = await this.loadPlaylistDataRepository.load(playlistId);
+      if (!playlist) {
+        throw new NotFoundException({
+          message: `Playlist with id ${playlistId} not found`,
+          source: AddTracksToPlaylistService.name,
+        });
+      }
+
       const tracksByPlatform = dto.tracks.reduce(
         (acc, track) => {
           if (!acc[track.platform]) {
@@ -32,20 +48,22 @@ export class AddTracksToPlaylistService {
       );
 
       for (const [platform, platformIds] of Object.entries(tracksByPlatform)) {
-        const existingTracks =
-          await this.addTracksToPlaylistRepository.findExistingTracks(
-            platformIds,
-            platform as Platform,
-          );
+        const existingTracks = await Promise.all(
+          platformIds.map((platformId) =>
+            this.loadTrackByIdRepository.load(platformId, platform as Platform),
+          ),
+        );
 
         const existingPlatformIds = new Set(
-          existingTracks.map((track) => track.platformId),
+          existingTracks.flatMap((track) =>
+            track.platforms.map((p) => p.platformId),
+          ),
         );
         const newPlatformIds = platformIds.filter(
           (id) => !existingPlatformIds.has(id),
         );
 
-        if (newPlatformIds.length > 0) {
+        if (newPlatformIds.length) {
           const { newTracks } = await this.createTracksService.create(
             newPlatformIds.map((platformId) => ({
               platformId,
