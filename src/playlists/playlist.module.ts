@@ -9,6 +9,10 @@ import { AuthModule } from '@Auth/auth.module';
 import { PrismaModule } from '@Prisma/prisma.module';
 import { CreateTrackPlatformRepository } from '@Tracks/repositories/create-track-platform.repository';
 import { QueueModule } from '@Queue/queue.module';
+import { LoadPlaylistDataService } from './services/load-playlist-data.service';
+import { LoadPlaylistDataRepository } from './repositories/load-playlist-data.repository';
+import { LoadPlaylistTracksService } from './services/load-playlist-tracks.service';
+import { LoadPlaylistTracksRepository } from './repositories/load-playlist-tracks.repository';
 
 @Module({
   imports: [TrackModule, AuthModule, PrismaModule, QueueModule],
@@ -18,6 +22,10 @@ import { QueueModule } from '@Queue/queue.module';
     CreatePlaylistService,
     CreatePlaylistRepository,
     CreateTrackPlatformRepository,
+    LoadPlaylistDataService,
+    LoadPlaylistDataRepository,
+    LoadPlaylistTracksService,
+    LoadPlaylistTracksRepository,
   ],
 })
 export class PlaylistModule implements NestModule {

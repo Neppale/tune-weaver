@@ -8,11 +8,15 @@ import {
 import { GetSamplePlaylistsService } from '../services/get-sample-playlists.service';
 import { Platform } from '@prisma/client';
 import { QueueService } from '@Queue/services/queue.service';
+import { LoadPlaylistTracksService } from '@Playlists/services/load-playlist-tracks.service';
+import { LoadPlaylistDataService } from '@Playlists/services/load-playlist-data.service';
 
 describe('PlaylistController', () => {
   let controller: PlaylistController;
   let createPlaylistService: jest.Mocked<CreatePlaylistService>;
   let getSamplePlaylistsService: jest.Mocked<GetSamplePlaylistsService>;
+  let loadPlaylistDataService: jest.Mocked<LoadPlaylistDataService>;
+  let loadPlaylistTracksService: jest.Mocked<LoadPlaylistTracksService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -31,9 +35,21 @@ describe('PlaylistController', () => {
           },
         },
         {
+          provide: LoadPlaylistDataService,
+          useValue: {
+            load: jest.fn(),
+          },
+        },
+        {
           provide: QueueService,
           useValue: {
             publishTrackEnrichment: jest.fn(),
+          },
+        },
+        {
+          provide: LoadPlaylistTracksService,
+          useValue: {
+            load: jest.fn(),
           },
         },
       ],
@@ -46,6 +62,12 @@ describe('PlaylistController', () => {
     getSamplePlaylistsService = module.get<
       jest.Mocked<GetSamplePlaylistsService>
     >(GetSamplePlaylistsService);
+    loadPlaylistDataService = module.get<jest.Mocked<LoadPlaylistDataService>>(
+      LoadPlaylistDataService,
+    );
+    loadPlaylistTracksService = module.get<
+      jest.Mocked<LoadPlaylistTracksService>
+    >(LoadPlaylistTracksService);
   });
 
   it('should call createPlaylistService.create once', async () => {
@@ -62,5 +84,26 @@ describe('PlaylistController', () => {
     await controller.sample('123', Platform.SPOTIFY);
 
     expect(getSamplePlaylistsService.get).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call loadPlaylistDataService.load once', async () => {
+    loadPlaylistDataService.load.mockResolvedValue(mockPlaylistResponse);
+
+    await controller.load('123');
+
+    expect(loadPlaylistDataService.load).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call loadPlaylistTracksService.load once', async () => {
+    loadPlaylistTracksService.load.mockResolvedValue({
+      tracks: [],
+      total: 0,
+    });
+
+    await controller.loadTracks('123', {
+      search: 'test',
+    });
+
+    expect(loadPlaylistTracksService.load).toHaveBeenCalledTimes(1);
   });
 });
