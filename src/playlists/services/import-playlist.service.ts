@@ -7,6 +7,7 @@ import { CreatePlaylistService } from './create-playlist.service';
 import { CreatePlaylistDto } from '../dtos/create-playlist.dto';
 import { ImportedPlaylist } from '../models/imported-playlist.model';
 import { PlatformNotSupportedException } from '@Exceptions/auth.exception';
+import { AddTracksToPlaylistService } from './add-tracks-to-playlist.service';
 
 @Injectable()
 export class ImportPlaylistService {
@@ -16,6 +17,7 @@ export class ImportPlaylistService {
     private readonly fetchYoutubeMusicPlaylistService: FetchYoutubeMusicPlaylistService,
     private readonly fetchSpotifyPlaylistService: FetchSpotifyPlaylistService,
     private readonly createPlaylistService: CreatePlaylistService,
+    private readonly addTracksToPlaylistService: AddTracksToPlaylistService,
   ) {}
 
   async import(data: ImportPlaylistDto) {
@@ -41,9 +43,18 @@ export class ImportPlaylistService {
     const createPlaylistDto: CreatePlaylistDto = {
       name: playlist.name,
       userId: data.userId,
-      sourcePlaylistId: data.platformId,
     };
 
-    return this.createPlaylistService.create(createPlaylistDto);
+    const createdPlaylist =
+      await this.createPlaylistService.create(createPlaylistDto);
+
+    await this.addTracksToPlaylistService.add(createdPlaylist.id, {
+      tracks: playlist.trackIds.map((trackId) => ({
+        platformId: trackId,
+        platform: playlist.platform,
+      })),
+    });
+
+    return createdPlaylist;
   }
 }

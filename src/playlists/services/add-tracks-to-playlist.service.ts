@@ -50,11 +50,15 @@ export class AddTracksToPlaylistService {
           platformIds.map((platformId) =>
             this.loadTrackByIdRepository.load(platformId, platform as Platform),
           ),
+        ).then((tracks) =>
+          tracks.filter(
+            (track): track is NonNullable<typeof track> => track !== null,
+          ),
         );
 
         const existingPlatformIds = new Set(
           existingTracks.flatMap((track) =>
-            track.platforms.map((p) => p.platformId),
+            track.platforms?.map((p) => p.platformId),
           ),
         );
         const newPlatformIds = platformIds.filter(

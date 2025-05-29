@@ -29,8 +29,23 @@ export class GetTrackDataByPlatformService {
           await this.getYouTubeMusicTrackDataByTrackIdService.get(trackIds);
         return youtubeMusicTracks.map((track) => ({
           id: track.id,
-          name: track.name,
-          artists: track.artists,
+          name: (() => {
+            const parts = track.name.split(' - ');
+            if (parts.length > 1) {
+              const [artist, ...nameParts] = parts;
+              track.artists.push({ id: '', name: artist });
+              return nameParts.join(' - ');
+            }
+            return track.name;
+          })(),
+          artists: (() => {
+            const parts = track.name.split(' - ');
+            if (parts.length > 1) {
+              const [artist] = parts;
+              return [{ id: '', name: artist }];
+            }
+            return track.artists;
+          })(),
           album: track.album,
           duration: track.duration,
         }));
