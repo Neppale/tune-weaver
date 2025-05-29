@@ -19,22 +19,12 @@ enum Platform {
   YOUTUBE_MUSIC
 }
 
-model User {
-  id        String     @id
-  email     String     @unique
-  name      String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  playlists Playlist[]
-}
-
 model Playlist {
   id               String          @id
   name             String
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   deletedAt        DateTime?
-  user             User            @relation(fields: [userId], references: [id])
   userId           String
   tracks           PlaylistTrack[]
   sourcePlaylist   Playlist?       @relation("subplaylists", fields: [sourcePlaylistId], references: [id])
@@ -47,16 +37,16 @@ model Playlist {
 }
 
 model Track {
-  id        String   @id
-  name      String
-  artist    String
-  album     String?
-  duration  Int
-  isEnriched Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  platforms TrackPlatform[]
-  playlists PlaylistTrack[]
+  id          String   @id
+  name        String
+  artist      String
+  album       String?
+  duration    Int
+  isEnriched  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  platforms   TrackPlatform[]
+  playlists   PlaylistTrack[]
 }
 
 model TrackPlatform {
