@@ -15,6 +15,7 @@ import { LoadPlaylistTracksService } from './services/load-playlist-tracks.servi
 import { LoadPlaylistTracksRepository } from './repositories/load-playlist-tracks.repository';
 import { ImportPlaylistService } from './services/import-playlist.service';
 import { FetchYoutubeMusicPlaylistService } from './services/youtube-music/fetch-youtube-music-playlist.service';
+import { FetchSpotifyPlaylistService } from './services/spotify/fetch-spotify-playlist.service';
 
 @Module({
   imports: [TrackModule, AuthModule, PrismaModule, QueueModule],
@@ -30,6 +31,7 @@ import { FetchYoutubeMusicPlaylistService } from './services/youtube-music/fetch
     LoadPlaylistTracksRepository,
     ImportPlaylistService,
     FetchYoutubeMusicPlaylistService,
+    FetchSpotifyPlaylistService,
   ],
 })
 export class PlaylistModule implements NestModule {

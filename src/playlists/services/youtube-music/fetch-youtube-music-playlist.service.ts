@@ -24,7 +24,6 @@ export class FetchYoutubeMusicPlaylistService {
     } catch (error) {
       this.logger.error(
         `Failed to fetch YouTube Music playlist ${playlistId}: ${error.message}`,
-        error.stack,
       );
       throw error;
     }

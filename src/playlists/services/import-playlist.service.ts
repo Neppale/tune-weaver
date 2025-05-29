@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Platform } from '@prisma/client';
 import { ImportPlaylistDto } from '../dtos/import-playlist.dto';
 import { FetchYoutubeMusicPlaylistService } from './youtube-music/fetch-youtube-music-playlist.service';
+import { FetchSpotifyPlaylistService } from './spotify/fetch-spotify-playlist.service';
 import { CreatePlaylistService } from './create-playlist.service';
 import { CreatePlaylistDto } from '../dtos/create-playlist.dto';
 import { PlatformNotSupportedException } from '@Exceptions/auth.exception';
@@ -13,6 +14,7 @@ export class ImportPlaylistService {
 
   constructor(
     private readonly fetchYoutubeMusicPlaylistService: FetchYoutubeMusicPlaylistService,
+    private readonly fetchSpotifyPlaylistService: FetchSpotifyPlaylistService,
     private readonly createPlaylistService: CreatePlaylistService,
   ) {}
 
@@ -37,14 +39,9 @@ export class ImportPlaylistService {
   ): Promise<ImportedPlaylist> {
     switch (platform) {
       case Platform.YOUTUBE_MUSIC:
-        const response =
-          await this.fetchYoutubeMusicPlaylistService.fetch(platformId);
-
-        return {
-          name: response.name,
-          trackIds: response.trackIds,
-          platform,
-        };
+        return this.fetchYoutubeMusicPlaylistService.fetch(platformId);
+      case Platform.SPOTIFY:
+        return this.fetchSpotifyPlaylistService.fetch(platformId);
       default:
         throw new PlatformNotSupportedException(platform);
     }
