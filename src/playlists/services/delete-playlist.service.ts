@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { DeletePlaylistRepository } from '../repositories/delete-playlist.repository';
-import { LoadPlaylistDataByIdRepository } from '../repositories/load-playlist-data.repository';
+import { LoadPlaylistDataByIdRepository } from '../repositories/load-playlist-data-by-id.repository';
 
 @Injectable()
 export class DeletePlaylistService {

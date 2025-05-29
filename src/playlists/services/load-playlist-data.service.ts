@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { LoadPlaylistDataByIdRepository } from '../repositories/load-playlist-data.repository';
+import { LoadPlaylistDataByIdRepository } from '../repositories/load-playlist-data-by-id.repository';
 import { Playlist } from '@prisma/client';
 
 @Injectable()
-export class LoadPlaylistDataService {
+export class LoadPlaylistDataByIdService {
   constructor(
     private readonly loadPlaylistDataByIdRepository: LoadPlaylistDataByIdRepository,
   ) {}
@@ -14,7 +14,7 @@ export class LoadPlaylistDataService {
     if (!playlist) {
       throw new NotFoundException({
         message: `Playlist with id ${id} not found`,
-        source: LoadPlaylistDataService.name,
+        source: LoadPlaylistDataByIdService.name,
       });
     }
 

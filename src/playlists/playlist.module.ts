@@ -9,8 +9,8 @@ import { AuthModule } from '@Auth/auth.module';
 import { PrismaModule } from '@Prisma/prisma.module';
 import { CreateTrackPlatformRepository } from '@Tracks/repositories/create-track-platform.repository';
 import { QueueModule } from '@Queue/queue.module';
-import { LoadPlaylistDataService } from './services/load-playlist-data.service';
-import { LoadPlaylistDataByIdRepository } from './repositories/load-playlist-data.repository';
+import { LoadPlaylistDataByIdService } from './services/load-playlist-data.service';
+import { LoadPlaylistDataByIdRepository } from './repositories/load-playlist-data-by-id.repository';
 import { LoadPlaylistTracksService } from './services/load-playlist-tracks.service';
 import { LoadPlaylistTracksRepository } from './repositories/load-playlist-tracks.repository';
 import { ImportPlaylistService } from './services/import-playlist.service';
@@ -31,7 +31,7 @@ import { DeletePlaylistRepository } from './repositories/delete-playlist.reposit
     CreatePlaylistService,
     CreatePlaylistRepository,
     CreateTrackPlatformRepository,
-    LoadPlaylistDataService,
+    LoadPlaylistDataByIdService,
     LoadPlaylistDataByIdRepository,
     LoadPlaylistTracksService,
     LoadPlaylistTracksRepository,

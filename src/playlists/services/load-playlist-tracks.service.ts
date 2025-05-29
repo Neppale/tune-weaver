@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { LoadPlaylistTracksRepository } from '../repositories/load-playlist-tracks.repository';
-import { LoadPlaylistDataService } from './load-playlist-data.service';
+import { LoadPlaylistDataByIdService } from './load-playlist-data.service';
 import { LoadPlaylistTracksDto } from '@Playlists/dtos/load-playlist-tracks.dto';
 import { LoadPlaylistTracksResult } from '@Playlists/models/load-playlist-tracks.result';
 
@@ -11,7 +11,7 @@ export class LoadPlaylistTracksService {
 
   constructor(
     private readonly loadPlaylistTracksRepository: LoadPlaylistTracksRepository,
-    private readonly loadPlaylistDataService: LoadPlaylistDataService,
+    private readonly loadPlaylistDataByIdService: LoadPlaylistDataByIdService,
   ) {}
 
   async load(
@@ -22,7 +22,7 @@ export class LoadPlaylistTracksService {
       size = this.DEFAULT_PAGE_SIZE,
     }: LoadPlaylistTracksDto,
   ): Promise<LoadPlaylistTracksResult> {
-    await this.loadPlaylistDataService.load(playlistId);
+    await this.loadPlaylistDataByIdService.load(playlistId);
 
     const { tracks, total } = await this.loadPlaylistTracksRepository.load(
       playlistId,

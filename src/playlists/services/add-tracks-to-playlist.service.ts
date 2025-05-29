@@ -4,7 +4,7 @@ import { AddTracksToPlaylistRepository } from '../repositories/add-tracks-to-pla
 import { CreateTracksService } from '@Tracks/services/create-tracks.service';
 import { QueueService } from '@Queue/services/queue.service';
 import { AddTracksToPlaylistDto } from '../dtos/add-tracks-to-playlist.dto';
-import { LoadPlaylistDataByIdRepository } from '../repositories/load-playlist-data.repository';
+import { LoadPlaylistDataByIdRepository } from '../repositories/load-playlist-data-by-id.repository';
 import { LoadTrackByIdRepository } from '@Tracks/repositories/load-track-by-id.repository';
 
 @Injectable()

@@ -13,7 +13,7 @@ import { CreatePlaylistDto } from './dtos/create-playlist.dto';
 import { CreatePlaylistService } from './services/create-playlist.service';
 import { Platform, Playlist } from '@prisma/client';
 import { PlaylistOrganization } from '../interfaces/spotify/playlist-organization.interface';
-import { LoadPlaylistDataService } from './services/load-playlist-data.service';
+import { LoadPlaylistDataByIdService } from './services/load-playlist-data.service';
 import { LoadPlaylistTracksService } from './services/load-playlist-tracks.service';
 import { LoadPlaylistTracksResult } from './models/load-playlist-tracks.result';
 import { LoadPlaylistTracksDto } from '@Playlists/dtos/load-playlist-tracks.dto';
@@ -30,7 +30,7 @@ export class PlaylistController {
   constructor(
     private readonly getSamplePlaylistsService: GetSamplePlaylistsService,
     private readonly createPlaylistService: CreatePlaylistService,
-    private readonly loadPlaylistDataService: LoadPlaylistDataService,
+    private readonly loadPlaylistDataByIdService: LoadPlaylistDataByIdService,
     private readonly loadPlaylistTracksService: LoadPlaylistTracksService,
     private readonly importPlaylistService: ImportPlaylistService,
     private readonly addTracksToPlaylistService: AddTracksToPlaylistService,
@@ -53,7 +53,7 @@ export class PlaylistController {
 
   @Get(':id')
   async load(@Param('id') id: string): Promise<Playlist> {
-    return this.loadPlaylistDataService.load(id);
+    return this.loadPlaylistDataByIdService.load(id);
   }
 
   @Get(':id/tracks')

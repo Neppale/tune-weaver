@@ -9,7 +9,7 @@ import { GetSamplePlaylistsService } from '../services/get-sample-playlists.serv
 import { Platform } from '@prisma/client';
 import { QueueService } from '@Queue/services/queue.service';
 import { LoadPlaylistTracksService } from '@Playlists/services/load-playlist-tracks.service';
-import { LoadPlaylistDataService } from '@Playlists/services/load-playlist-data.service';
+import { LoadPlaylistDataByIdService } from '@Playlists/services/load-playlist-data.service';
 import { ImportPlaylistService } from '@Playlists/services/import-playlist.service';
 import { AddTracksToPlaylistService } from '@Playlists/services/add-tracks-to-playlist.service';
 import { DeleteTracksFromPlaylistService } from '@Playlists/services/delete-tracks-from-playlist.service';
@@ -19,7 +19,7 @@ describe('PlaylistController', () => {
   let controller: PlaylistController;
   let createPlaylistService: jest.Mocked<CreatePlaylistService>;
   let getSamplePlaylistsService: jest.Mocked<GetSamplePlaylistsService>;
-  let loadPlaylistDataService: jest.Mocked<LoadPlaylistDataService>;
+  let loadPlaylistDataByIdService: jest.Mocked<LoadPlaylistDataByIdService>;
   let loadPlaylistTracksService: jest.Mocked<LoadPlaylistTracksService>;
   let importPlaylistService: jest.Mocked<ImportPlaylistService>;
   let addTracksToPlaylistService: jest.Mocked<AddTracksToPlaylistService>;
@@ -43,7 +43,7 @@ describe('PlaylistController', () => {
           },
         },
         {
-          provide: LoadPlaylistDataService,
+          provide: LoadPlaylistDataByIdService,
           useValue: {
             load: jest.fn(),
           },
@@ -94,9 +94,9 @@ describe('PlaylistController', () => {
     getSamplePlaylistsService = module.get<
       jest.Mocked<GetSamplePlaylistsService>
     >(GetSamplePlaylistsService);
-    loadPlaylistDataService = module.get<jest.Mocked<LoadPlaylistDataService>>(
-      LoadPlaylistDataService,
-    );
+    loadPlaylistDataByIdService = module.get<
+      jest.Mocked<LoadPlaylistDataByIdService>
+    >(LoadPlaylistDataByIdService);
     loadPlaylistTracksService = module.get<
       jest.Mocked<LoadPlaylistTracksService>
     >(LoadPlaylistTracksService);
@@ -130,12 +130,12 @@ describe('PlaylistController', () => {
     expect(getSamplePlaylistsService.get).toHaveBeenCalledTimes(1);
   });
 
-  it('should call loadPlaylistDataService.load once', async () => {
-    loadPlaylistDataService.load.mockResolvedValue(mockPlaylistResponse);
+  it('should call loadPlaylistDataByIdService.load once', async () => {
+    loadPlaylistDataByIdService.load.mockResolvedValue(mockPlaylistResponse);
 
     await controller.load('123');
 
-    expect(loadPlaylistDataService.load).toHaveBeenCalledTimes(1);
+    expect(loadPlaylistDataByIdService.load).toHaveBeenCalledTimes(1);
   });
 
   it('should call loadPlaylistTracksService.load once', async () => {
