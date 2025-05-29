@@ -45,6 +45,7 @@ describe('CreateTracksService', () => {
         duration: 180,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isEnriched: false,
         platforms: [
           {
             id: 'platform1',

@@ -10,6 +10,7 @@ export const mockExistingTrack = {
     duration: 180,
     createdAt: mockDate,
     updatedAt: mockDate,
+    isEnriched: false,
   },
   id: 'platform1',
   trackId: 'existingTrack1',
@@ -27,6 +28,7 @@ export const mockNewTrack = {
   duration: 180,
   createdAt: mockDate,
   updatedAt: mockDate,
+  isEnriched: false,
 };
 
 export const mockNewTrackPlatform = {
@@ -47,4 +49,5 @@ export const mockSimilarTrack = {
   createdAt: mockDate,
   updatedAt: mockDate,
   platforms: [mockNewTrackPlatform],
+  isEnriched: false,
 };

@@ -7,6 +7,7 @@ import {
 } from './mocks/playlist.mock';
 import { GetSamplePlaylistsService } from '../services/get-sample-playlists.service';
 import { Platform } from '@prisma/client';
+import { QueueService } from '@Queue/services/queue.service';
 
 describe('PlaylistController', () => {
   let controller: PlaylistController;
@@ -27,6 +28,12 @@ describe('PlaylistController', () => {
           provide: GetSamplePlaylistsService,
           useValue: {
             get: jest.fn(),
+          },
+        },
+        {
+          provide: QueueService,
+          useValue: {
+            publishTrackEnrichment: jest.fn(),
           },
         },
       ],

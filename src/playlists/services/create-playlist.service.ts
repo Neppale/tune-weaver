@@ -3,11 +3,8 @@ import { CreatePlaylistRepository } from '../repositories/create-playlist.reposi
 import { CreatePlaylistDto } from '../dtos/create-playlist.dto';
 import { Playlist, Platform } from '@prisma/client';
 import { CreateTracksService } from '@Tracks/services/create-tracks.service';
-import { CreateTrackParams } from '@Tracks/dtos/create-track.params';
 import { LoadTrackPlatformByPlatformIdRepository } from '@Tracks/repositories/load-track-platform-by-platform-id.repository';
-import { FindTrackByMetadataRepository } from '@Tracks/repositories/find-tracks-by-metadata.repository';
-import { GetTrackDataByPlatformService } from '@Tracks/services/get-track-data-by-platform.service';
-import { CreateTrackPlatformRepository } from '@Tracks/repositories/create-track-platform.repository';
+import { QueueService } from '@Queue/services/queue.service';
 import { CreateTrackDto } from '@Playlists/dtos/playlist.dto';
 
 interface TrackMatch {
@@ -21,10 +18,8 @@ export class CreatePlaylistService {
   constructor(
     private readonly createPlaylistRepository: CreatePlaylistRepository,
     private readonly createTracksService: CreateTracksService,
-    private readonly getTrackDataByPlatformService: GetTrackDataByPlatformService,
     private readonly loadTrackPlatformByPlatformIdRepository: LoadTrackPlatformByPlatformIdRepository,
-    private readonly findTrackByMetadataRepository: FindTrackByMetadataRepository,
-    private readonly createTrackPlatformRepository: CreateTrackPlatformRepository,
+    private readonly queueService: QueueService,
   ) {}
 
   async create(data: CreatePlaylistDto): Promise<Playlist> {
@@ -121,59 +116,30 @@ export class CreatePlaylistService {
   private async processNewTracks(
     tracksToProcess: CreatePlaylistDto['tracks'],
   ): Promise<TrackMatch[]> {
-    const tracksWithData = await this.getTracksData(tracksToProcess);
-    return this.processTracksWithData(tracksWithData);
-  }
+    const tracksWithData = tracksToProcess.map((track) => ({
+      platform: track.platform,
+      platformId: track.platformId,
+      name: '',
+      artist: '',
+      album: '',
+      duration: 0,
+    }));
 
-  private async getTracksData(
-    tracks: CreatePlaylistDto['tracks'],
-  ): Promise<CreateTrackParams[]> {
-    const trackDataPromises = tracks.map(async (track) => {
-      const trackData = await this.getTrackDataByPlatformService.get(
-        track.platform,
-        [track.platformId],
-      );
-      return {
-        platform: track.platform,
-        platformId: track.platformId,
-        name: trackData[0].name,
-        artist: trackData[0].artists[0].name,
-        album: trackData[0].album?.name,
-        duration: trackData[0].duration,
-      } as CreateTrackParams;
-    });
+    const { newTracks } = await this.createTracksService.create(tracksWithData);
 
-    return Promise.all(trackDataPromises);
-  }
+    await Promise.all(
+      newTracks.map((track, index) =>
+        this.queueService.publishTrackEnrichment(
+          track.id,
+          tracksToProcess[index].platform,
+        ),
+      ),
+    );
 
-  private async processTracksWithData(
-    tracks: CreateTrackParams[],
-  ): Promise<TrackMatch[]> {
-    const trackProcessingPromises = tracks.map(async (track) => {
-      const similarTrack = await this.findTrackByMetadataRepository.find(track);
-
-      if (similarTrack) {
-        await this.createTrackPlatformRepository.create({
-          trackId: similarTrack.id,
-          platform: track.platform,
-          platformId: track.platformId,
-        });
-
-        return {
-          trackId: similarTrack.id,
-          platform: track.platform,
-          platformId: track.platformId,
-        };
-      }
-
-      const { newTracks } = await this.createTracksService.create([track]);
-      return {
-        trackId: newTracks[0].id,
-        platform: track.platform,
-        platformId: track.platformId,
-      };
-    });
-
-    return Promise.all(trackProcessingPromises);
+    return newTracks.map((track, index) => ({
+      trackId: track.id,
+      platform: tracksToProcess[index].platform,
+      platformId: tracksToProcess[index].platformId,
+    }));
   }
 }

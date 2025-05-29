@@ -23,6 +23,7 @@ export class CreateTracksService {
         duration: track.duration,
         createdAt: track.createdAt,
         updatedAt: track.updatedAt,
+        isEnriched: false,
       })),
       newTrackPlatforms: createdTracks.flatMap((track) => track.platforms),
     };

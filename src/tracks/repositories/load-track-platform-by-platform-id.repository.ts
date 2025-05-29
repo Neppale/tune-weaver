@@ -10,6 +10,7 @@ export class LoadTrackPlatformByPlatformIdRepository {
     return this.prisma.trackPlatform.findMany({
       where: {
         platform,
+        track: { isEnriched: true },
         platformId: {
           in: platformIds,
         },

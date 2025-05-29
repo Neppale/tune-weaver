@@ -45,15 +45,16 @@ model Playlist {
 }
 
 model Track {
-  id        String          @id
+  id        String   @id
   name      String
   artist    String
   album     String?
   duration  Int
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  playlists PlaylistTrack[]
+  isEnriched Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   platforms TrackPlatform[]
+  playlists PlaylistTrack[]
 }
 
 model TrackPlatform {

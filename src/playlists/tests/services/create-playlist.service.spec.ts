@@ -2,10 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CreatePlaylistService } from '../../services/create-playlist.service';
 import { CreatePlaylistRepository } from '../../repositories/create-playlist.repository';
 import { CreateTracksService } from '../../../tracks/services/create-tracks.service';
-import { GetTrackDataByPlatformService } from '../../../tracks/services/get-track-data-by-platform.service';
-import { LoadTrackPlatformByPlatformIdRepository } from '../../../tracks/repositories/load-track-platform-by-platform-id.repository';
-import { FindTrackByMetadataRepository } from '../../../tracks/repositories/find-tracks-by-metadata.repository';
-import { mockTrackData } from '../mocks/track-data.mock';
 import {
   mockEmptyPlaylistData,
   mockPlaylistData,
@@ -15,18 +11,17 @@ import {
   mockExistingTrack,
   mockNewTrack,
   mockNewTrackPlatform,
-  mockSimilarTrack,
 } from '../mocks/track-platform.mock';
-import { CreateTrackPlatformRepository } from '../../../tracks/repositories/create-track-platform.repository';
+import { QueueService } from '@Queue/services/queue.service';
+import { Platform } from '@prisma/client';
+import { LoadTrackPlatformByPlatformIdRepository } from '@Tracks/repositories/load-track-platform-by-platform-id.repository';
 
 describe('CreatePlaylistService', () => {
   let service: CreatePlaylistService;
   let createPlaylistRepository: jest.Mocked<CreatePlaylistRepository>;
   let createTracksService: jest.Mocked<CreateTracksService>;
-  let getTrackDataByPlatformService: jest.Mocked<GetTrackDataByPlatformService>;
   let loadTrackPlatformByPlatformIdRepository: jest.Mocked<LoadTrackPlatformByPlatformIdRepository>;
-  let findTrackByMetadataRepository: jest.Mocked<FindTrackByMetadataRepository>;
-  let createTrackPlatformRepository: jest.Mocked<CreateTrackPlatformRepository>;
+  let queueService: jest.Mocked<QueueService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -45,27 +40,15 @@ describe('CreatePlaylistService', () => {
           },
         },
         {
-          provide: GetTrackDataByPlatformService,
-          useValue: {
-            get: jest.fn(),
-          },
-        },
-        {
           provide: LoadTrackPlatformByPlatformIdRepository,
           useValue: {
             load: jest.fn(),
           },
         },
         {
-          provide: FindTrackByMetadataRepository,
+          provide: QueueService,
           useValue: {
-            find: jest.fn(),
-          },
-        },
-        {
-          provide: CreateTrackPlatformRepository,
-          useValue: {
-            create: jest.fn(),
+            publishTrackEnrichment: jest.fn(),
           },
         },
       ],
@@ -74,12 +57,10 @@ describe('CreatePlaylistService', () => {
     service = module.get<CreatePlaylistService>(CreatePlaylistService);
     createPlaylistRepository = module.get(CreatePlaylistRepository);
     createTracksService = module.get(CreateTracksService);
-    getTrackDataByPlatformService = module.get(GetTrackDataByPlatformService);
     loadTrackPlatformByPlatformIdRepository = module.get(
       LoadTrackPlatformByPlatformIdRepository,
     );
-    findTrackByMetadataRepository = module.get(FindTrackByMetadataRepository);
-    createTrackPlatformRepository = module.get(CreateTrackPlatformRepository);
+    queueService = module.get(QueueService);
   });
 
   it('should call createPlaylistRepository.create once when tracks are empty', async () => {
@@ -103,36 +84,8 @@ describe('CreatePlaylistService', () => {
     );
   });
 
-  it('should call getTrackDataByPlatformService.get once when tracks are not empty', async () => {
-    loadTrackPlatformByPlatformIdRepository.load.mockResolvedValue([]);
-    getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
-    findTrackByMetadataRepository.find.mockResolvedValue(null);
-    createTracksService.create.mockResolvedValue({
-      newTracks: [mockNewTrack],
-      newTrackPlatforms: [mockNewTrackPlatform],
-    });
-    createPlaylistRepository.create.mockResolvedValue(mockPlaylistResponse);
-
-    await service.create(mockPlaylistData);
-
-    expect(getTrackDataByPlatformService.get).toHaveBeenCalledTimes(1);
-  });
-
-  it('should call findTracksByMetadataRepository.findSimilarTracks once when tracks are not empty', async () => {
-    loadTrackPlatformByPlatformIdRepository.load.mockResolvedValue([]);
-    getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
-    findTrackByMetadataRepository.find.mockResolvedValue(mockSimilarTrack);
-    createPlaylistRepository.create.mockResolvedValue(mockPlaylistResponse);
-
-    await service.create(mockPlaylistData);
-
-    expect(findTrackByMetadataRepository.find).toHaveBeenCalledTimes(1);
-  });
-
   it('should call createTracksService.create once when tracks are not empty', async () => {
     loadTrackPlatformByPlatformIdRepository.load.mockResolvedValue([]);
-    getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
-    findTrackByMetadataRepository.find.mockResolvedValue(null);
     createTracksService.create.mockResolvedValue({
       newTracks: [mockNewTrack],
       newTrackPlatforms: [mockNewTrackPlatform],
@@ -146,8 +99,6 @@ describe('CreatePlaylistService', () => {
 
   it('should call createPlaylistRepository.create once when tracks are not empty', async () => {
     loadTrackPlatformByPlatformIdRepository.load.mockResolvedValue([]);
-    getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
-    findTrackByMetadataRepository.find.mockResolvedValue(null);
     createTracksService.create.mockResolvedValue({
       newTracks: [mockNewTrack],
       newTrackPlatforms: [mockNewTrackPlatform],
@@ -159,16 +110,20 @@ describe('CreatePlaylistService', () => {
     expect(createPlaylistRepository.create).toHaveBeenCalledTimes(1);
   });
 
-  it('should call createTrackPlatformRepository.create once when tracks are not empty', async () => {
-    createTrackPlatformRepository.create.mockResolvedValue(
-      mockNewTrackPlatform,
-    );
+  it('should call queueService.publishTrackEnrichment with platform for each new track', async () => {
+    const mockPlatform = Platform.SPOTIFY;
     loadTrackPlatformByPlatformIdRepository.load.mockResolvedValue([]);
-    getTrackDataByPlatformService.get.mockResolvedValue([mockTrackData]);
-    findTrackByMetadataRepository.find.mockResolvedValue(mockNewTrack);
+    createTracksService.create.mockResolvedValue({
+      newTracks: [mockNewTrack],
+      newTrackPlatforms: [{ ...mockNewTrackPlatform, platform: mockPlatform }],
+    });
+    createPlaylistRepository.create.mockResolvedValue(mockPlaylistResponse);
 
     await service.create(mockPlaylistData);
 
-    expect(createTrackPlatformRepository.create).toHaveBeenCalledTimes(1);
+    expect(queueService.publishTrackEnrichment).toHaveBeenCalledWith(
+      mockNewTrack.id,
+      mockPlatform,
+    );
   });
 });

@@ -8,9 +8,10 @@ import { CreatePlaylistRepository } from './repositories/create-playlist.reposit
 import { AuthModule } from '@Auth/auth.module';
 import { PrismaModule } from '@Prisma/prisma.module';
 import { CreateTrackPlatformRepository } from '@Tracks/repositories/create-track-platform.repository';
+import { QueueModule } from '@Queue/queue.module';
 
 @Module({
-  imports: [TrackModule, AuthModule, PrismaModule],
+  imports: [TrackModule, AuthModule, PrismaModule, QueueModule],
   controllers: [PlaylistController],
   providers: [
     GetSamplePlaylistsService,

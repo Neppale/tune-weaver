@@ -27,7 +27,8 @@
       "@Auth/*": ["src/auth/*"],
       "@Exceptions/*": ["src/exceptions/*"],
       "@Filters/*": ["src/filters/*"],
-      "@Interfaces/*": ["src/interfaces/*"]
+      "@Interfaces/*": ["src/interfaces/*"],
+      "@Queue/*": ["src/queue/*"]
     }
   }
 }
