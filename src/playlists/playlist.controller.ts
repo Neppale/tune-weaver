@@ -6,6 +6,7 @@ import {
   Param,
   Query,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { GetSamplePlaylistsService } from './services/get-sample-playlists.service';
 import { CreatePlaylistDto } from './dtos/create-playlist.dto';
@@ -20,6 +21,8 @@ import { ImportPlaylistService } from './services/import-playlist.service';
 import { ImportPlaylistDto } from './dtos/import-playlist.dto';
 import { AddTracksToPlaylistService } from './services/add-tracks-to-playlist.service';
 import { AddTracksToPlaylistDto } from './dtos/add-tracks-to-playlist.dto';
+import { DeleteTracksFromPlaylistService } from './services/delete-tracks-from-playlist.service';
+import { DeleteTracksFromPlaylistDto } from './dtos/delete-tracks-from-playlist.dto';
 
 @Controller('playlist')
 export class PlaylistController {
@@ -30,6 +33,7 @@ export class PlaylistController {
     private readonly loadPlaylistTracksService: LoadPlaylistTracksService,
     private readonly importPlaylistService: ImportPlaylistService,
     private readonly addTracksToPlaylistService: AddTracksToPlaylistService,
+    private readonly deleteTracksFromPlaylistService: DeleteTracksFromPlaylistService,
   ) {}
 
   @Get('sample/:playlistId')
@@ -68,6 +72,14 @@ export class PlaylistController {
     @Param('id') id: string,
     @Body() addTracksDto: AddTracksToPlaylistDto,
   ): Promise<void> {
-    return this.addTracksToPlaylistService.addTracks(id, addTracksDto);
+    return this.addTracksToPlaylistService.add(id, addTracksDto);
+  }
+
+  @Delete(':id/tracks')
+  deleteTracks(
+    @Param('id') id: string,
+    @Body() deleteTracksDto: DeleteTracksFromPlaylistDto,
+  ): Promise<void> {
+    return this.deleteTracksFromPlaylistService.delete(id, deleteTracksDto);
   }
 }

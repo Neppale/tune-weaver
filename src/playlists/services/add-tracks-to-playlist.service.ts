@@ -19,10 +19,7 @@ export class AddTracksToPlaylistService {
     private readonly queueService: QueueService,
   ) {}
 
-  async addTracks(
-    playlistId: string,
-    dto: AddTracksToPlaylistDto,
-  ): Promise<void> {
+  async add(playlistId: string, dto: AddTracksToPlaylistDto): Promise<void> {
     try {
       this.logger.log(
         `Adding ${dto.tracks.length} tracks to playlist ${playlistId}`,

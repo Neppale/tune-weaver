@@ -12,6 +12,7 @@ import { LoadPlaylistTracksService } from '@Playlists/services/load-playlist-tra
 import { LoadPlaylistDataService } from '@Playlists/services/load-playlist-data.service';
 import { ImportPlaylistService } from '@Playlists/services/import-playlist.service';
 import { AddTracksToPlaylistService } from '@Playlists/services/add-tracks-to-playlist.service';
+import { DeleteTracksFromPlaylistService } from '@Playlists/services/delete-tracks-from-playlist.service';
 
 describe('PlaylistController', () => {
   let controller: PlaylistController;
@@ -21,7 +22,7 @@ describe('PlaylistController', () => {
   let loadPlaylistTracksService: jest.Mocked<LoadPlaylistTracksService>;
   let importPlaylistService: jest.Mocked<ImportPlaylistService>;
   let addTracksToPlaylistService: jest.Mocked<AddTracksToPlaylistService>;
-
+  let deleteTracksFromPlaylistService: jest.Mocked<DeleteTracksFromPlaylistService>;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PlaylistController],
@@ -65,7 +66,13 @@ describe('PlaylistController', () => {
         {
           provide: AddTracksToPlaylistService,
           useValue: {
-            addTracks: jest.fn(),
+            add: jest.fn(),
+          },
+        },
+        {
+          provide: DeleteTracksFromPlaylistService,
+          useValue: {
+            delete: jest.fn(),
           },
         },
       ],
@@ -90,6 +97,9 @@ describe('PlaylistController', () => {
     addTracksToPlaylistService = module.get<
       jest.Mocked<AddTracksToPlaylistService>
     >(AddTracksToPlaylistService);
+    deleteTracksFromPlaylistService = module.get<
+      jest.Mocked<DeleteTracksFromPlaylistService>
+    >(DeleteTracksFromPlaylistService);
   });
 
   it('should call createPlaylistService.create once', async () => {
@@ -142,7 +152,7 @@ describe('PlaylistController', () => {
   });
 
   it('should call addTracksToPlaylistService.add once', async () => {
-    addTracksToPlaylistService.addTracks.mockResolvedValue(undefined);
+    addTracksToPlaylistService.add.mockResolvedValue(undefined);
 
     await controller.addTracks('123', {
       tracks: [
@@ -153,6 +163,16 @@ describe('PlaylistController', () => {
       ],
     });
 
-    expect(addTracksToPlaylistService.addTracks).toHaveBeenCalledTimes(1);
+    expect(addTracksToPlaylistService.add).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call deleteTracksFromPlaylistService.delete once', async () => {
+    deleteTracksFromPlaylistService.delete.mockResolvedValue(undefined);
+
+    await controller.deleteTracks('123', {
+      trackIds: ['123'],
+    });
+
+    expect(deleteTracksFromPlaylistService.delete).toHaveBeenCalledTimes(1);
   });
 });
