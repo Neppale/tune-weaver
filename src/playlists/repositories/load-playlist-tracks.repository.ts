@@ -40,6 +40,14 @@ export class LoadPlaylistTracksRepository {
         where,
         skip: (page - 1) * size,
         take: size,
+        include: {
+          platforms: {
+            select: {
+              platform: true,
+              platformId: true,
+            },
+          },
+        },
         orderBy: {
           createdAt: 'asc',
         },

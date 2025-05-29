@@ -1,6 +1,6 @@
-import { Track } from '@prisma/client';
+import { FormattedTrack } from './formatted-track.model';
 
 export interface LoadPlaylistTracksResult {
-  tracks: Track[];
+  tracks: FormattedTrack[];
   total: number;
 }
