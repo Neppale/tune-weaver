@@ -23,6 +23,7 @@ import { AddTracksToPlaylistService } from './services/add-tracks-to-playlist.se
 import { AddTracksToPlaylistDto } from './dtos/add-tracks-to-playlist.dto';
 import { DeleteTracksFromPlaylistService } from './services/delete-tracks-from-playlist.service';
 import { DeleteTracksFromPlaylistDto } from './dtos/delete-tracks-from-playlist.dto';
+import { DeletePlaylistService } from './services/delete-playlist.service';
 
 @Controller('playlist')
 export class PlaylistController {
@@ -34,6 +35,7 @@ export class PlaylistController {
     private readonly importPlaylistService: ImportPlaylistService,
     private readonly addTracksToPlaylistService: AddTracksToPlaylistService,
     private readonly deleteTracksFromPlaylistService: DeleteTracksFromPlaylistService,
+    private readonly deletePlaylistService: DeletePlaylistService,
   ) {}
 
   @Get('sample/:playlistId')
@@ -81,5 +83,10 @@ export class PlaylistController {
     @Body() deleteTracksDto: DeleteTracksFromPlaylistDto,
   ): Promise<void> {
     return this.deleteTracksFromPlaylistService.delete(id, deleteTracksDto);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string): Promise<void> {
+    return this.deletePlaylistService.delete(id);
   }
 }

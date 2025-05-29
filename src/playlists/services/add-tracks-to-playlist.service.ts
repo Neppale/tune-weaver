@@ -4,7 +4,7 @@ import { AddTracksToPlaylistRepository } from '../repositories/add-tracks-to-pla
 import { CreateTracksService } from '@Tracks/services/create-tracks.service';
 import { QueueService } from '@Queue/services/queue.service';
 import { AddTracksToPlaylistDto } from '../dtos/add-tracks-to-playlist.dto';
-import { LoadPlaylistDataRepository } from '../repositories/load-playlist-data.repository';
+import { LoadPlaylistDataByIdRepository } from '../repositories/load-playlist-data.repository';
 import { LoadTrackByIdRepository } from '@Tracks/repositories/load-track-by-id.repository';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class AddTracksToPlaylistService {
   private readonly logger = new Logger(AddTracksToPlaylistService.name);
 
   constructor(
-    private readonly loadPlaylistDataRepository: LoadPlaylistDataRepository,
+    private readonly loadPlaylistDataByIdRepository: LoadPlaylistDataByIdRepository,
     private readonly addTracksToPlaylistRepository: AddTracksToPlaylistRepository,
     private readonly loadTrackByIdRepository: LoadTrackByIdRepository,
     private readonly createTracksService: CreateTracksService,
@@ -25,7 +25,8 @@ export class AddTracksToPlaylistService {
         `Adding ${dto.tracks.length} tracks to playlist ${playlistId}`,
       );
 
-      const playlist = await this.loadPlaylistDataRepository.load(playlistId);
+      const playlist =
+        await this.loadPlaylistDataByIdRepository.load(playlistId);
       if (!playlist) {
         throw new NotFoundException({
           message: `Playlist with id ${playlistId} not found`,

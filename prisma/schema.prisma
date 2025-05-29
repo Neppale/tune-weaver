@@ -33,6 +33,7 @@ model Playlist {
   name             String
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
+  deletedAt        DateTime?
   user             User            @relation(fields: [userId], references: [id])
   userId           String
   tracks           PlaylistTrack[]
@@ -42,6 +43,7 @@ model Playlist {
 
   @@index([userId])
   @@index([sourcePlaylistId])
+  @@index([deletedAt])
 }
 
 model Track {

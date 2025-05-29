@@ -21,4 +21,5 @@ export const mockPlaylistResponse = {
   createdAt: mockDate,
   updatedAt: mockDate,
   sourcePlaylistId: mockPlaylistData.sourcePlaylistId,
+  deletedAt: null,
 };

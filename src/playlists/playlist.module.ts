@@ -10,7 +10,7 @@ import { PrismaModule } from '@Prisma/prisma.module';
 import { CreateTrackPlatformRepository } from '@Tracks/repositories/create-track-platform.repository';
 import { QueueModule } from '@Queue/queue.module';
 import { LoadPlaylistDataService } from './services/load-playlist-data.service';
-import { LoadPlaylistDataRepository } from './repositories/load-playlist-data.repository';
+import { LoadPlaylistDataByIdRepository } from './repositories/load-playlist-data.repository';
 import { LoadPlaylistTracksService } from './services/load-playlist-tracks.service';
 import { LoadPlaylistTracksRepository } from './repositories/load-playlist-tracks.repository';
 import { ImportPlaylistService } from './services/import-playlist.service';
@@ -20,6 +20,8 @@ import { AddTracksToPlaylistService } from './services/add-tracks-to-playlist.se
 import { AddTracksToPlaylistRepository } from './repositories/add-tracks-to-playlist.repository';
 import { DeleteTracksFromPlaylistService } from './services/delete-tracks-from-playlist.service';
 import { DeleteTracksFromPlaylistRepository } from './repositories/delete-tracks-from-playlist.repository';
+import { DeletePlaylistService } from './services/delete-playlist.service';
+import { DeletePlaylistRepository } from './repositories/delete-playlist.repository';
 
 @Module({
   imports: [TrackModule, AuthModule, PrismaModule, QueueModule],
@@ -30,7 +32,7 @@ import { DeleteTracksFromPlaylistRepository } from './repositories/delete-tracks
     CreatePlaylistRepository,
     CreateTrackPlatformRepository,
     LoadPlaylistDataService,
-    LoadPlaylistDataRepository,
+    LoadPlaylistDataByIdRepository,
     LoadPlaylistTracksService,
     LoadPlaylistTracksRepository,
     ImportPlaylistService,
@@ -40,6 +42,8 @@ import { DeleteTracksFromPlaylistRepository } from './repositories/delete-tracks
     AddTracksToPlaylistRepository,
     DeleteTracksFromPlaylistService,
     DeleteTracksFromPlaylistRepository,
+    DeletePlaylistService,
+    DeletePlaylistRepository,
   ],
 })
 export class PlaylistModule implements NestModule {

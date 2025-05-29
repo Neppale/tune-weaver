@@ -13,6 +13,7 @@ import { LoadPlaylistDataService } from '@Playlists/services/load-playlist-data.
 import { ImportPlaylistService } from '@Playlists/services/import-playlist.service';
 import { AddTracksToPlaylistService } from '@Playlists/services/add-tracks-to-playlist.service';
 import { DeleteTracksFromPlaylistService } from '@Playlists/services/delete-tracks-from-playlist.service';
+import { DeletePlaylistService } from '@Playlists/services/delete-playlist.service';
 
 describe('PlaylistController', () => {
   let controller: PlaylistController;
@@ -23,6 +24,8 @@ describe('PlaylistController', () => {
   let importPlaylistService: jest.Mocked<ImportPlaylistService>;
   let addTracksToPlaylistService: jest.Mocked<AddTracksToPlaylistService>;
   let deleteTracksFromPlaylistService: jest.Mocked<DeleteTracksFromPlaylistService>;
+  let deletePlaylistService: jest.Mocked<DeletePlaylistService>;
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PlaylistController],
@@ -75,6 +78,12 @@ describe('PlaylistController', () => {
             delete: jest.fn(),
           },
         },
+        {
+          provide: DeletePlaylistService,
+          useValue: {
+            delete: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -100,6 +109,9 @@ describe('PlaylistController', () => {
     deleteTracksFromPlaylistService = module.get<
       jest.Mocked<DeleteTracksFromPlaylistService>
     >(DeleteTracksFromPlaylistService);
+    deletePlaylistService = module.get<jest.Mocked<DeletePlaylistService>>(
+      DeletePlaylistService,
+    );
   });
 
   it('should call createPlaylistService.create once', async () => {
@@ -174,5 +186,13 @@ describe('PlaylistController', () => {
     });
 
     expect(deleteTracksFromPlaylistService.delete).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call deletePlaylistService.delete once', async () => {
+    deletePlaylistService.delete.mockResolvedValue(undefined);
+
+    await controller.delete('123');
+
+    expect(deletePlaylistService.delete).toHaveBeenCalledTimes(1);
   });
 });

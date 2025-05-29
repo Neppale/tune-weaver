@@ -1,15 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { LoadPlaylistDataRepository } from '../repositories/load-playlist-data.repository';
+import { LoadPlaylistDataByIdRepository } from '../repositories/load-playlist-data.repository';
 import { Playlist } from '@prisma/client';
 
 @Injectable()
 export class LoadPlaylistDataService {
   constructor(
-    private readonly loadPlaylistDataRepository: LoadPlaylistDataRepository,
+    private readonly loadPlaylistDataByIdRepository: LoadPlaylistDataByIdRepository,
   ) {}
 
   async load(id: string): Promise<Playlist> {
-    const playlist = await this.loadPlaylistDataRepository.load(id);
+    const playlist = await this.loadPlaylistDataByIdRepository.load(id);
 
     if (!playlist) {
       throw new NotFoundException({
