@@ -8,6 +8,8 @@ import { LoadPlaylistDataService } from './services/load-playlist-data.service';
 import { LoadPlaylistTracksService } from './services/load-playlist-tracks.service';
 import { LoadPlaylistTracksResult } from './models/load-playlist-tracks.result';
 import { LoadPlaylistTracksDto } from '@Playlists/dtos/load-playlist-tracks.dto';
+import { ImportPlaylistService } from './services/import-playlist.service';
+import { ImportPlaylistDto } from './dtos/import-playlist.dto';
 
 @Controller('playlist')
 export class PlaylistController {
@@ -16,6 +18,7 @@ export class PlaylistController {
     private readonly createPlaylistService: CreatePlaylistService,
     private readonly loadPlaylistDataService: LoadPlaylistDataService,
     private readonly loadPlaylistTracksService: LoadPlaylistTracksService,
+    private readonly importPlaylistService: ImportPlaylistService,
   ) {}
 
   @Get('sample/:playlistId')
@@ -42,5 +45,10 @@ export class PlaylistController {
     @Query() query: LoadPlaylistTracksDto,
   ): Promise<LoadPlaylistTracksResult> {
     return this.loadPlaylistTracksService.load(playlistId, query);
+  }
+
+  @Post('import')
+  async import(@Body() data: ImportPlaylistDto): Promise<Playlist> {
+    return this.importPlaylistService.import(data);
   }
 }

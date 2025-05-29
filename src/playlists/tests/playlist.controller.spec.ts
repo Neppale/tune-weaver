@@ -10,6 +10,7 @@ import { Platform } from '@prisma/client';
 import { QueueService } from '@Queue/services/queue.service';
 import { LoadPlaylistTracksService } from '@Playlists/services/load-playlist-tracks.service';
 import { LoadPlaylistDataService } from '@Playlists/services/load-playlist-data.service';
+import { ImportPlaylistService } from '@Playlists/services/import-playlist.service';
 
 describe('PlaylistController', () => {
   let controller: PlaylistController;
@@ -17,6 +18,7 @@ describe('PlaylistController', () => {
   let getSamplePlaylistsService: jest.Mocked<GetSamplePlaylistsService>;
   let loadPlaylistDataService: jest.Mocked<LoadPlaylistDataService>;
   let loadPlaylistTracksService: jest.Mocked<LoadPlaylistTracksService>;
+  let importPlaylistService: jest.Mocked<ImportPlaylistService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -52,6 +54,12 @@ describe('PlaylistController', () => {
             load: jest.fn(),
           },
         },
+        {
+          provide: ImportPlaylistService,
+          useValue: {
+            import: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
@@ -68,6 +76,9 @@ describe('PlaylistController', () => {
     loadPlaylistTracksService = module.get<
       jest.Mocked<LoadPlaylistTracksService>
     >(LoadPlaylistTracksService);
+    importPlaylistService = module.get<jest.Mocked<ImportPlaylistService>>(
+      ImportPlaylistService,
+    );
   });
 
   it('should call createPlaylistService.create once', async () => {
@@ -105,5 +116,17 @@ describe('PlaylistController', () => {
     });
 
     expect(loadPlaylistTracksService.load).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call importPlaylistService.import once', async () => {
+    importPlaylistService.import.mockResolvedValue(mockPlaylistResponse);
+
+    await controller.import({
+      platform: Platform.YOUTUBE_MUSIC,
+      platformId: '123',
+      userId: '456',
+    });
+
+    expect(importPlaylistService.import).toHaveBeenCalledTimes(1);
   });
 });

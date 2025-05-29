@@ -9,10 +9,11 @@ export class CreatePlaylistRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreatePlaylistDto): Promise<Playlist> {
-    return this.prisma.$transaction(async (tx) => {
+    const id = generateId();
+    this.prisma.$transaction(async (tx) => {
       const playlist = await tx.playlist.create({
         data: {
-          id: generateId(),
+          id,
           name: data.name,
           sourcePlaylist: data.sourcePlaylistId
             ? {
@@ -37,8 +38,14 @@ export class CreatePlaylistRepository {
           })),
         });
       }
-
-      return playlist;
     });
+
+    const playlist = await this.prisma.playlist.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return playlist;
   }
 }
