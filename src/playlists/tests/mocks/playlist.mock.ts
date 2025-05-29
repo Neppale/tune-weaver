@@ -28,4 +28,5 @@ export const mockPlaylistResponse = {
   userId: mockPlaylistData.userId,
   createdAt: mockDate,
   updatedAt: mockDate,
+  sourcePlaylistId: mockPlaylistData.sourcePlaylistId,
 };

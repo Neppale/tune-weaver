@@ -20,59 +20,63 @@ enum Platform {
 }
 
 model User {
-  id          String      @id
-  email       String      @unique
-  name        String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  playlists   Playlist[]
+  id        String     @id
+  email     String     @unique
+  name      String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  playlists Playlist[]
 }
 
 model Playlist {
-  id          String      @id
-  name        String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  user        User        @relation(fields: [userId], references: [id])
-  userId      String
-  tracks      PlaylistTrack[]
+  id               String          @id
+  name             String
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  user             User            @relation(fields: [userId], references: [id])
+  userId           String
+  tracks           PlaylistTrack[]
+  sourcePlaylist   Playlist?       @relation("subplaylists", fields: [sourcePlaylistId], references: [id])
+  sourcePlaylistId String?
+  subplaylists     Playlist[]      @relation("subplaylists")
 
   @@index([userId])
+  @@index([sourcePlaylistId])
 }
 
 model Track {
-  id          String      @id
-  name        String
-  artist      String
-  album       String?
-  duration    Int
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  playlists   PlaylistTrack[]
-  platforms   TrackPlatform[]
+  id        String          @id
+  name      String
+  artist    String
+  album     String?
+  duration  Int
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  playlists PlaylistTrack[]
+  platforms TrackPlatform[]
 }
 
 model TrackPlatform {
-  id          String      @id
-  trackId     String
-  platform    Platform
-  platformId  String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  track       Track       @relation(fields: [trackId], references: [id])
+  id         String   @id
+  trackId    String
+  platform   Platform
+  platformId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  track      Track    @relation(fields: [trackId], references: [id])
 
   @@unique([platform, platformId])
   @@index([trackId])
 }
 
 model PlaylistTrack {
-  id          String      @id
-  playlistId  String
-  trackId     String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  playlist    Playlist    @relation(fields: [playlistId], references: [id])
-  track       Track       @relation(fields: [trackId], references: [id])
+  id         String   @id
+  playlistId String
+  trackId    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  track      Track    @relation(fields: [trackId], references: [id])
 
   @@index([playlistId])
   @@index([trackId])

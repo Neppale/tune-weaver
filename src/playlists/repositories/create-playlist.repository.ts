@@ -14,6 +14,11 @@ export class CreatePlaylistRepository {
         data: {
           id: generateId(),
           name: data.name,
+          sourcePlaylist: data.sourcePlaylistId
+            ? {
+                connect: { id: data.sourcePlaylistId },
+              }
+            : undefined,
           user: {
             connect: { id: data.userId },
           },

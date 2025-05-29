@@ -33,6 +33,10 @@ export class CreatePlaylistDto {
 
   @IsOptional()
   @IsArray({ each: true })
-  @IsUUID(4, { each: true })
   existingTrackIds?: string[];
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  sourcePlaylistId?: string;
 }
