@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SpotifyAuthService } from '../../services/spotify-auth.service';
+import { SpotifyAuthService } from '@Auth/services/spotify-auth.service';
 import axios from 'axios';
 
 jest.mock('axios');

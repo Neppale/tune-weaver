@@ -4,7 +4,7 @@ import { Platform } from '@prisma/client';
 import {
   InvalidAuthCodeException,
   InvalidRefreshTokenException,
-} from '../exceptions/auth.exception';
+} from '@Exceptions/auth.exception';
 
 @Controller('auth')
 export class AuthController {

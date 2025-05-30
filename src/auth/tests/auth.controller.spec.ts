@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from '../auth.controller';
-import { AuthService } from '../services/auth.service';
+import { AuthController } from '@Auth/auth.controller';
+import { AuthService } from '@Auth/services/auth.service';
 import { Platform } from '@prisma/client';
 import {
   InvalidAuthCodeException,
   InvalidRefreshTokenException,
-} from '../../exceptions/auth.exception';
+} from '@Exceptions/auth.exception';
 
 describe('AuthController', () => {
   let controller: AuthController;

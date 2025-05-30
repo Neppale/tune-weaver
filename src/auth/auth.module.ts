@@ -3,7 +3,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './services/auth.service';
 import { SpotifyAuthService } from './services/spotify-auth.service';
 import { YoutubeMusicAuthService } from './services/youtube-music-auth.service';
-import { PrismaModule } from '../prisma/prisma.module';
+import { PrismaModule } from '@Prisma/prisma.module';
 
 @Module({
   imports: [PrismaModule],

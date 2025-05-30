@@ -1,8 +1,8 @@
 import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { Platform } from '@prisma/client';
-import { SpotifyAuthService } from '../services/spotify-auth.service';
-import { YoutubeMusicAuthService } from '../services/youtube-music-auth.service';
+import { SpotifyAuthService } from '@Auth/services/spotify-auth.service';
+import { YoutubeMusicAuthService } from '@Auth/services/youtube-music-auth.service';
 
 @Injectable()
 export class PlatformAuthMiddleware implements NestMiddleware {

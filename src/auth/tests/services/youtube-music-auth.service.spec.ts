@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { YoutubeMusicAuthService } from '../../services/youtube-music-auth.service';
+import { YoutubeMusicAuthService } from '@Auth/services/youtube-music-auth.service';
 import YTMusic from 'ytmusic-api';
 
 jest.mock('ytmusic-api');

@@ -97,14 +97,14 @@
       ".*\\.exception\\.ts$"
     ],
     "moduleNameMapper": {
-      "^@Tracks/(.*)$": "<rootDir>/tracks/$1",
-      "^@Playlists/(.*)$": "<rootDir>/playlists/$1",
+      "^@Tracks/(.*)$": "<rootDir>/api/tracks/$1",
+      "^@Playlists/(.*)$": "<rootDir>/api/playlists/$1",
       "^@Prisma/(.*)$": "<rootDir>/prisma/$1",
       "^@Utils/(.*)$": "<rootDir>/utils/$1",
       "^@Auth/(.*)$": "<rootDir>/auth/$1",
-      "^@Exceptions/(.*)$": "<rootDir>/exceptions/$1",
-      "^@Filters/(.*)$": "<rootDir>/filters/$1",
-      "^@Interfaces/(.*)$": "<rootDir>/interfaces/$1",
+      "^@Exceptions/(.*)$": "<rootDir>/api/exceptions/$1",
+      "^@Filters/(.*)$": "<rootDir>/api/filters/$1",
+      "^@Interfaces/(.*)$": "<rootDir>/api/interfaces/$1",
       "^@Queue/(.*)$": "<rootDir>/queue/$1"
     }
   }

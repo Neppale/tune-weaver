@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '@Auth/services/auth.service';
 import { Platform } from '@prisma/client';
 import { PlatformNotSupportedException } from '@Exceptions/auth.exception';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 
 jest.mock('@spotify/web-api-ts-sdk');
-jest.mock('../../services/youtube-music-auth.service');
+jest.mock('@Auth/services/youtube-music-auth.service');
 
 describe('AuthService', () => {
   let service: AuthService;
