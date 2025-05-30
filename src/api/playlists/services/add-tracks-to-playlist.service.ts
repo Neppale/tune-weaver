@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Platform } from '@prisma/client';
 import { AddTracksToPlaylistRepository } from '@Playlists/repositories/add-tracks-to-playlist.repository';
 import { CreateTracksService } from '@Tracks/services/create-tracks.service';
-import { QueueService } from '@Queue/src/services/queue.service';
+import { SendTrackToEnrichmentQueue } from '@Tracks/services/send-track-to-enrichment-queue.service';
 import { AddTracksToPlaylistDto } from '@Playlists/dtos/add-tracks-to-playlist.dto';
 import { LoadPlaylistDataByIdRepository } from '@Playlists/repositories/load-playlist-data-by-id.repository';
 import { LoadTrackByIdRepository } from '@Tracks/repositories/load-track-by-id.repository';
@@ -16,7 +16,7 @@ export class AddTracksToPlaylistService {
     private readonly addTracksToPlaylistRepository: AddTracksToPlaylistRepository,
     private readonly loadTrackByIdRepository: LoadTrackByIdRepository,
     private readonly createTracksService: CreateTracksService,
-    private readonly queueService: QueueService,
+    private readonly queueService: SendTrackToEnrichmentQueue,
   ) {}
 
   async add(playlistId: string, dto: AddTracksToPlaylistDto): Promise<void> {

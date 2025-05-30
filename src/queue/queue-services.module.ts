@@ -1,27 +1,11 @@
-import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { QueueService } from './src/services/queue.service';
+import { forwardRef, Module } from '@nestjs/common';
+import { EnrichTrackService } from './src/services/enrich-track.service';
+import { TrackServicesModule } from '@Tracks/track-services.module';
+import { TrackRepositoriesModule } from '@Tracks/track-repositories.module';
 
 @Module({
-  imports: [
-    ClientsModule.registerAsync([
-      {
-        name: 'TRACK_ENRICHMENT',
-        useFactory: () => ({
-          transport: Transport.RMQ,
-          options: {
-            urls: [process.env.RABBITMQ_URL],
-            queue: 'track_enrichment',
-            queueOptions: {
-              durable: true,
-            },
-          },
-        }),
-        inject: [],
-      },
-    ]),
-  ],
-  providers: [QueueService],
-  exports: [QueueService],
+  imports: [forwardRef(() => TrackServicesModule), TrackRepositoriesModule],
+  providers: [EnrichTrackService],
+  exports: [EnrichTrackService],
 })
 export class QueueServicesModule {}

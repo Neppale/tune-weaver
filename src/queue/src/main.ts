@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ApiQueueModule } from '../api-queue.module';
+import { QueueModule } from '../queue.module';
 import { Logger } from '@nestjs/common';
 import { Transport } from '@nestjs/microservices';
 import { MicroserviceOptions } from '@nestjs/microservices';
@@ -8,7 +8,7 @@ async function bootstrap() {
   const logger = new Logger('TrackEnrichmentMicroservice');
 
   const microservice =
-    await NestFactory.createMicroservice<MicroserviceOptions>(ApiQueueModule, {
+    await NestFactory.createMicroservice<MicroserviceOptions>(QueueModule, {
       transport: Transport.RMQ,
       options: {
         urls: [process.env.RABBITMQ_URL],

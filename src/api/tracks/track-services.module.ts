@@ -7,9 +7,11 @@ import { GetTrackIdsByPlaylistIdService } from '@Tracks/services/get-track-ids-b
 import { TrackRepositoriesModule } from '@Tracks/track-repositories.module';
 import { CreateTracksService } from '@Tracks/services/create-tracks.service';
 import { SearchTracksService } from '@Tracks/services/search-tracks.service';
+import { SendTrackToEnrichmentQueue } from './services/send-track-to-enrichment-queue.service';
+import { QueueClientsModule } from '@Queue/queue-clients.module';
 
 @Module({
-  imports: [AuthModule, TrackRepositoriesModule],
+  imports: [AuthModule, TrackRepositoriesModule, QueueClientsModule],
   providers: [
     GetTrackDataByPlatformService,
     GetSpotifyTrackDataByTrackIdService,
@@ -17,6 +19,7 @@ import { SearchTracksService } from '@Tracks/services/search-tracks.service';
     GetTrackIdsByPlaylistIdService,
     CreateTracksService,
     SearchTracksService,
+    SendTrackToEnrichmentQueue,
   ],
   exports: [
     GetTrackDataByPlatformService,
@@ -25,6 +28,7 @@ import { SearchTracksService } from '@Tracks/services/search-tracks.service';
     GetTrackIdsByPlaylistIdService,
     CreateTracksService,
     SearchTracksService,
+    SendTrackToEnrichmentQueue,
   ],
 })
 export class TrackServicesModule {}

@@ -3,8 +3,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Platform } from '@prisma/client';
 
 @Injectable()
-export class QueueService {
-  private readonly logger = new Logger(QueueService.name);
+export class SendTrackToEnrichmentQueue {
+  private readonly logger = new Logger(SendTrackToEnrichmentQueue.name);
 
   constructor(
     @Inject('TRACK_ENRICHMENT') private readonly client: ClientProxy,

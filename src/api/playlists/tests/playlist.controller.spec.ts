@@ -7,7 +7,7 @@ import {
 } from './mocks/playlist.mock';
 import { GetSamplePlaylistsService } from '@Playlists/services/get-sample-playlists.service';
 import { Platform } from '@prisma/client';
-import { QueueService } from '@Queue/src/services/queue.service';
+import { SendTrackToEnrichmentQueue } from '@Tracks/services/send-track-to-enrichment-queue.service';
 import { LoadPlaylistTracksService } from '@Playlists/services/load-playlist-tracks.service';
 import { LoadPlaylistDataByIdService } from '@Playlists/services/load-playlist-data.service';
 import { ImportPlaylistService } from '@Playlists/services/import-playlist.service';
@@ -49,7 +49,7 @@ describe('PlaylistController', () => {
           },
         },
         {
-          provide: QueueService,
+          provide: SendTrackToEnrichmentQueue,
           useValue: {
             publishTrackEnrichment: jest.fn(),
           },
