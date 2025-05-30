@@ -20,15 +20,15 @@
     "noFallthroughCasesInSwitch": false,
     "moduleResolution": "node",
     "paths": {
-      "@Tracks/*": ["src/api/tracks/*"],
-      "@Playlists/*": ["src/api/playlists/*"],
-      "@Prisma/*": ["src/prisma/*"],
-      "@Utils/*": ["src/utils/*"],
-      "@Auth/*": ["src/auth/*"],
-      "@Exceptions/*": ["src/api/exceptions/*"],
-      "@Filters/*": ["src/api/filters/*"],
-      "@Interfaces/*": ["src/api/interfaces/*"],
-      "@Queue/*": ["src/queue/*"]
+      "@Tracks/*": ["apps/api/tracks/*"],
+      "@Playlists/*": ["apps/api/playlists/*"],
+      "@Prisma/*": ["apps/prisma/*"],
+      "@Utils/*": ["apps/utils/*"],
+      "@Auth/*": ["apps/auth/*"],
+      "@Exceptions/*": ["apps/api/exceptions/*"],
+      "@Filters/*": ["apps/api/filters/*"],
+      "@Interfaces/*": ["apps/api/interfaces/*"],
+      "@Queue/*": ["apps/queue/*"]
     }
   }
 }

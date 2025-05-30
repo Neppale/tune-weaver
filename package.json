@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"apps/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -21,8 +21,8 @@
     "prepare": "husky",
     "pre-commit": "npm run lint && npm audit --audit-level=critical && npm run test && npm run build",
     "prisma:reset": "npx prisma migrate reset --force",
-    "queue:start": "ts-node -r tsconfig-paths/register src/queue/src/main.ts --watch",
-    "api:start": "ts-node -r tsconfig-paths/register src/api/main.ts --watch"
+    "queue:start": "ts-node -r tsconfig-paths/register apps/queue/src/main.ts --watch",
+    "api:start": "ts-node -r tsconfig-paths/register apps/api/main.ts --watch"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -76,7 +76,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": "apps",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

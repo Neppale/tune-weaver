@@ -12,10 +12,7 @@ export class YoutubeMusicAuthService {
 
   async initialize() {
     try {
-      await this.ytmusic.initialize({
-        cookies:
-          'CONSENT=YES+1; _ga=GA1.2.1234567890.1234567890; _gid=GA1.2.1234567890.1234567890; _ga_1234567890=GA1.2.1234567890.1234567890.1234567890.1234567890; _ga_1234567890=GA1.2.1234567890.1234567890.1234567890.1234567890',
-      });
+      await this.ytmusic.initialize();
     } catch (error) {
       console.error('Failed to initialize YouTube Music:', error);
       throw error;
