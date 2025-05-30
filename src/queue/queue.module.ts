@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { QueueService } from './services/queue.service';
 import { TrackEnrichmentHandler } from './handlers/track-enrichment.handler';
-import { TrackModule } from '@Tracks/track.module';
+import { TrackServicesModule } from '@Tracks/track-services.module';
+import { TrackRepositoriesModule } from '@Tracks/track-repositories.module';
 import { AuthModule } from '@Auth/auth.module';
 import { PrismaModule } from '@Prisma/prisma.module';
 
@@ -24,7 +25,8 @@ import { PrismaModule } from '@Prisma/prisma.module';
         inject: [],
       },
     ]),
-    TrackModule,
+    TrackServicesModule,
+    TrackRepositoriesModule,
     AuthModule,
     PrismaModule,
   ],

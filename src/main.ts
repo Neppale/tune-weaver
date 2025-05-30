@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { ApiModule } from './api/api.module';
 import { Logger } from '@nestjs/common';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
@@ -9,7 +9,7 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
   const microservice =
-    await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+    await NestFactory.createMicroservice<MicroserviceOptions>(ApiModule, {
       transport: Transport.RMQ,
       options: {
         urls: [process.env.RABBITMQ_URL],
@@ -23,7 +23,7 @@ async function bootstrap() {
   await microservice.listen();
   logger.log('Microservice is listening for track enrichment messages');
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(ApiModule);
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
