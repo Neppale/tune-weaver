@@ -20,7 +20,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky",
     "pre-commit": "npm run lint && npm audit --audit-level=critical && npm run test && npm run build",
-    "prisma:reset": "npx prisma migrate reset --force"
+    "prisma:reset": "npx prisma migrate reset --force",
+    "queue:start": "ts-node -r tsconfig-paths/register src/queue/src/main.ts --watch",
+    "api:start": "ts-node -r tsconfig-paths/register src/api/main.ts --watch"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

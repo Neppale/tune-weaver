@@ -4,24 +4,23 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug NestJS",
+      "name": "Debug Queue",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start:debug"],
+      "runtimeArgs": ["run", "queue:start"],
       "sourceMaps": true,
       "envFile": "${workspaceFolder}/.env",
       "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "protocol": "inspector",
-      "restart": true,
-      "port": 9229,
-      "autoAttachChildProcesses": true
+      "console": "integratedTerminal"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Current File",
-      "program": "${file}",
-      "skipFiles": ["<node_internals>/**"],
+      "name": "Debug API",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "api:start"],
+      "sourceMaps": true,
+      "envFile": "${workspaceFolder}/.env",
+      "cwd": "${workspaceFolder}",
       "console": "integratedTerminal"
     }
   ]

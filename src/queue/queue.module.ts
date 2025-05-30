@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { QueueService } from './services/queue.service';
-import { TrackEnrichmentHandler } from './handlers/track-enrichment.handler';
+import { QueueService } from './src/services/queue.service';
+import { TrackEnrichmentHandler } from './src/handlers/track-enrichment.handler';
 import { TrackServicesModule } from '@Tracks/track-services.module';
 import { TrackRepositoriesModule } from '@Tracks/track-repositories.module';
 import { AuthModule } from '@Auth/auth.module';

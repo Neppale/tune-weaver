@@ -6,7 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const logger = new Logger('Bootstrap');
+  const logger = new Logger('TuneWeaver API');
 
   const microservice =
     await NestFactory.createMicroservice<MicroserviceOptions>(ApiModule, {
@@ -33,8 +33,10 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000);
-  logger.log('Application is running on: http://localhost:3000');
+  await app.listen(process.env.API_PORT);
+  logger.log(
+    `Application is running on: http://localhost:${process.env.API_PORT}`,
+  );
 }
 
 bootstrap();
