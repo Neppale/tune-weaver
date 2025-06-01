@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTrackParams } from '@Tracks/dtos/create-track.params';
+import { CreateTrackParams } from '@Tracks/models/dtos/create-track.params';
 import { Track, TrackPlatform } from '@prisma/client';
 import { CreateTracksRepository } from '@Tracks/repositories/create-tracks.repository';
 

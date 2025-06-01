@@ -9,20 +9,20 @@ import {
   Delete,
 } from '@nestjs/common';
 import { GetSamplePlaylistsService } from './services/get-sample-playlists.service';
-import { CreatePlaylistDto } from './dtos/create-playlist.dto';
+import { CreatePlaylistDto } from './models/dtos/create-playlist.dto';
 import { CreatePlaylistService } from './services/create-playlist.service';
 import { Platform, Playlist } from '@prisma/client';
 import { PlaylistOrganization } from '@Interfaces/spotify/playlist-organization.interface';
 import { LoadPlaylistDataByIdService } from './services/load-playlist-data.service';
 import { LoadPlaylistTracksService } from './services/load-playlist-tracks.service';
 import { LoadPlaylistTracksResult } from './models/load-playlist-tracks.result';
-import { LoadPlaylistTracksDto } from './dtos/load-playlist-tracks.dto';
+import { LoadPlaylistTracksDto } from './models/dtos/load-playlist-tracks.dto';
 import { ImportPlaylistService } from './services/import-playlist.service';
-import { ImportPlaylistDto } from './dtos/import-playlist.dto';
+import { ImportPlaylistDto } from './models/dtos/import-playlist.dto';
 import { AddTracksToPlaylistService } from './services/add-tracks-to-playlist.service';
-import { AddTracksToPlaylistDto } from './dtos/add-tracks-to-playlist.dto';
+import { AddTracksToPlaylistDto } from '../tracks/models/dtos/add-tracks-to-playlist.dto';
 import { DeleteTracksFromPlaylistService } from './services/delete-tracks-from-playlist.service';
-import { DeleteTracksFromPlaylistDto } from './dtos/delete-tracks-from-playlist.dto';
+import { DeleteTracksFromPlaylistDto } from '../tracks/models/dtos/delete-tracks-from-playlist.dto';
 import { DeletePlaylistService } from './services/delete-playlist.service';
 
 @Controller('playlist')

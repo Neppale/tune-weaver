@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Platform } from '@prisma/client';
-import { ImportPlaylistDto } from '@Playlists/dtos/import-playlist.dto';
+import { ImportPlaylistDto } from '@Playlists/models/dtos/import-playlist.dto';
 import { FetchYoutubeMusicPlaylistService } from './youtube-music/fetch-youtube-music-playlist.service';
 import { FetchSpotifyPlaylistService } from './spotify/fetch-spotify-playlist.service';
 import { CreatePlaylistService } from './create-playlist.service';
-import { CreatePlaylistDto } from '@Playlists/dtos/create-playlist.dto';
+import { CreatePlaylistDto } from '@Playlists/models/dtos/create-playlist.dto';
 import { ImportedPlaylist } from '@Playlists/models/imported-playlist.model';
 import { PlatformNotSupportedException } from '@Exceptions/auth.exception';
 import { AddTracksToPlaylistService } from './add-tracks-to-playlist.service';

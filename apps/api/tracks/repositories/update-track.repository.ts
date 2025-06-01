@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@Prisma/prisma.service';
 import { Track } from '@prisma/client';
-import { UpdateTrackDataParams } from '@Tracks/interfaces/update-track-data.params';
+import { UpdateTrackDataParams } from '@Tracks/models/interfaces/update-track-data.params';
 
 @Injectable()
 export class UpdateTrackRepository {

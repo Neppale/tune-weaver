@@ -1,4 +1,4 @@
-import { CreatePlaylistDto } from '@Playlists/dtos/create-playlist.dto';
+import { CreatePlaylistDto } from '@Playlists/models/dtos/create-playlist.dto';
 
 export const mockDate = new Date('2024-01-01');
 

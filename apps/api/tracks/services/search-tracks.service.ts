@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { SearchTracksRepository } from '@Tracks/repositories/search-tracks.repository';
-import { SearchTracksDto } from '@Tracks/dtos/search-tracks.dto';
+import { SearchTracksDto } from '@Tracks/models/dtos/search-tracks.dto';
 import { SearchTracksResult } from '@Tracks/models/search-tracks.result';
 
 @Injectable()

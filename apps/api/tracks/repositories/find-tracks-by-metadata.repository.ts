@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@Prisma/prisma.service';
-import { CreateTrackParams } from '@Tracks/dtos/create-track.params';
+import { CreateTrackParams } from '@Tracks/models/dtos/create-track.params';
 import { Track } from '@prisma/client';
 
 interface ScoredTrack {

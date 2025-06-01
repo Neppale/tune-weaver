@@ -1,4 +1,4 @@
-import { TrackData } from '@Tracks/interfaces/track-data.interface';
+import { TrackData } from '@Tracks/models/interfaces/track-data.interface';
 
 export const mockTrackData: TrackData = {
   id: 'track1',

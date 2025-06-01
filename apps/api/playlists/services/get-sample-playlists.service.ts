@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Platform } from '@prisma/client';
 import { GetTrackDataByPlatformService } from '@Tracks/services/get-track-data-by-platform.service';
-import { TrackData } from '@Tracks/interfaces/track-data.interface';
+import { TrackData } from '@Tracks/models/interfaces/track-data.interface';
 import { PlaylistOrganization } from '@Interfaces/spotify/playlist-organization.interface';
 import { GetTrackIdsByPlaylistIdService } from '@Tracks/services/get-track-ids-by-playlist-id.service';
 

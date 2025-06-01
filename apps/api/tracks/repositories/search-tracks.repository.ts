@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@Prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-import { SearchTracksDto } from '@Tracks/dtos/search-tracks.dto';
+import { SearchTracksDto } from '@Tracks/models/dtos/search-tracks.dto';
 import { SearchTracksResult } from '@Tracks/models/search-tracks.result';
 
 @Injectable()

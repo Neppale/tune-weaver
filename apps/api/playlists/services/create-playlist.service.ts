@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreatePlaylistRepository } from '@Playlists/repositories/create-playlist.repository';
-import { CreatePlaylistDto } from '@Playlists/dtos/create-playlist.dto';
+import { CreatePlaylistDto } from '@Playlists/models/dtos/create-playlist.dto';
 import { Playlist } from '@prisma/client';
 
 @Injectable()

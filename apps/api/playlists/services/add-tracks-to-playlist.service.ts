@@ -3,7 +3,7 @@ import { Platform } from '@prisma/client';
 import { AddTracksToPlaylistRepository } from '@Playlists/repositories/add-tracks-to-playlist.repository';
 import { CreateTracksService } from '@Tracks/services/create-tracks.service';
 import { SendTrackToEnrichmentQueue } from '@Tracks/services/send-track-to-enrichment-queue.service';
-import { AddTracksToPlaylistDto } from '@Playlists/dtos/add-tracks-to-playlist.dto';
+import { AddTracksToPlaylistDto } from '@Tracks/models/dtos/add-tracks-to-playlist.dto';
 import { LoadPlaylistDataByIdRepository } from '@Playlists/repositories/load-playlist-data-by-id.repository';
 import { LoadTrackByIdRepository } from '@Tracks/repositories/load-track-by-id.repository';
 

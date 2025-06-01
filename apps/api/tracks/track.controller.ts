@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { SearchTracksService } from './services/search-tracks.service';
-import { SearchTracksDto } from './dtos/search-tracks.dto';
+import { SearchTracksDto } from './models/dtos/search-tracks.dto';
 import { SearchTracksResult } from './models/search-tracks.result';
 
 @Controller('track')

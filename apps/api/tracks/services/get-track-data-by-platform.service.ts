@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Platform } from '@prisma/client';
 import { GetSpotifyTrackDataByTrackIdService } from './get-spotify-track-data-by-track-id.service';
 import { GetYouTubeMusicTrackDataByTrackIdService } from './get-youtube-music-track-data-by-track-id.service';
-import { TrackData } from '@Tracks/interfaces/track-data.interface';
+import { TrackData } from '@Tracks/models/interfaces/track-data.interface';
 import { PlatformNotSupportedException } from '@Exceptions/auth.exception';
 
 @Injectable()
