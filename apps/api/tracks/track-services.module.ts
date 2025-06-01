@@ -9,6 +9,7 @@ import { CreateTracksService } from '@Tracks/services/create-tracks.service';
 import { SearchTracksService } from '@Tracks/services/search-tracks.service';
 import { SendTrackToEnrichmentQueue } from './services/send-track-to-enrichment-queue.service';
 import { QueueClientsModule } from '@Queue/queue-clients.module';
+import { UpdateTrackService } from '@Tracks/services/update-track.service';
 
 @Module({
   imports: [AuthModule, TrackRepositoriesModule, QueueClientsModule],
@@ -20,6 +21,7 @@ import { QueueClientsModule } from '@Queue/queue-clients.module';
     CreateTracksService,
     SearchTracksService,
     SendTrackToEnrichmentQueue,
+    UpdateTrackService,
   ],
   exports: [
     GetTrackDataByPlatformService,
@@ -29,6 +31,7 @@ import { QueueClientsModule } from '@Queue/queue-clients.module';
     CreateTracksService,
     SearchTracksService,
     SendTrackToEnrichmentQueue,
+    UpdateTrackService,
   ],
 })
 export class TrackServicesModule {}

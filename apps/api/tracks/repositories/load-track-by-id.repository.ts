@@ -8,11 +8,11 @@ export class LoadTrackByIdRepository {
 
   async load(
     id: string,
-    platform: Platform,
+    platform?: Platform,
   ): Promise<Track & { platforms: TrackPlatform[] }> {
     return this.prisma.track.findUnique({
       where: { id },
-      include: { platforms: { where: { platform } } },
+      include: { platforms: platform ? { where: { platform } } : true },
     });
   }
 }
